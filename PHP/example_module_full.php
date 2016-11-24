@@ -23,7 +23,7 @@
 &lt;?php
     require_once('ZEI.php'); // (1) Includes the main API class
     $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
-    $zei = new ZEI(); // (3) Creates main instance, must be UNIQUE
+    $zei->requestToken(); // (3) Request a token
 ?&gt;
 &lt;html&gt;
 &lt;head&gt;
