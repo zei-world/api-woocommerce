@@ -111,9 +111,9 @@ class ZEI {
             if($request['success'])
                 if($request['token'])
                     $this->token = $request['token'];
-                else $this->throwError('Token missing into the request');
-            else $this->throwError('Server reached with an error : "'.$request['message'].'"');
-        else $this->throwError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
+                else $this->setError('Token missing into the request');
+            else $this->setError('Server reached with an error : "'.$request['message'].'"');
+        else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
     }
 
     /**
@@ -122,7 +122,8 @@ class ZEI {
      * @return string
      */
     function getModule() {
-        if(!$this->token) return $this->error;
+        if(!$this->token)
+            return '" style="display:none"></object>'.$this->error.'<object style="display:none'; // Owwwwwyeaaahhhhhhhh
         $params = '?t='.$this->token;
         if(!$this->window) {
             $params .= '&c=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
@@ -148,8 +149,8 @@ class ZEI {
         if($request)
             if($request['success'])
                 return true;
-            else $this->throwError('Server reached with an error : "'.$request['message'].'"');
-        else $this->throwError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
+            else $this->setError('Server reached with an error : "'.$request['message'].'"');
+        else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
         return false;
     }
 }

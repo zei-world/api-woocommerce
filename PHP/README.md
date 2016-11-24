@@ -16,7 +16,7 @@ You are free to don't use the ZEI.php class and do it your wait :)
 
 Simple version
 ------------
-We call the deploy() function located in the ZEI class
+Call the deploy() function located in the ZEI class
 ```html
 <?php require_once('ZEI.php'); ?>
 <html>
