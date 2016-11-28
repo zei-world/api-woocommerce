@@ -98,6 +98,7 @@ class ZEI {
                 else $this->setError('Token missing into the request');
             else $this->setError('Server reached with an error : "'.$request['message'].'"');
         else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
+        if($this->debug) var_dump($this->error);
     }
 
     /**
@@ -109,6 +110,7 @@ class ZEI {
      * @return string
      */
     function getModuleUrl($b2b = true, $b2c = true, $callback = null) {
+        if($this->error) return '';
         // Set id
         $params = '?token='.$this->token;
 
