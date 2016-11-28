@@ -1,7 +1,6 @@
 <?php
     require_once('ZEI.php'); // (1) Includes the main API class
     $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
-    $zei->requestToken(); // (3) Request a token action
 ?>
 <html>
     <head>
@@ -17,7 +16,7 @@
         </style>
     </head>
     <body>
-        <h1>Zero ecoimpact API - PHP (full)</h1>
-        <object id="ZEI" data="<?=$zei->getModule()?>"></object>
+        <h1>Zero ecoimpact API - PHP - User module</h1>
+        <object id="ZEI" data="<?=$zei->getModuleUrl(true, true)?>"></object>
     </body>
 </html>

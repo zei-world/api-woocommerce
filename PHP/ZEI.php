@@ -7,7 +7,7 @@
  *  @   @  @       @    @        d8' db 88.       .88.        88   88 88        .88.
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
- *    @   @ @ @ @ @   @             Version 1.0 - PHP Edition
+ *    @   @ @ @ @ @   @             Version 1.1 - PHP Edition
  *     @             @              Zero ecoimpact (https://zero-ecoimpact.org)
  *      @ @ @ @ @ @ @
  */
@@ -82,22 +82,6 @@ class ZEI {
     }
 
     /**
-     * Set the error var only if you enabled debug
-     * @param $message
-     */
-    private function setError($message) {
-        if($this->debug) $this->error = $message;
-    }
-
-    /**
-     * Set token
-     * @param $token
-     */
-    function setToken($token) {
-        $this->token = $token;
-    }
-
-    /**
      * Request a token with a PHP GET procedure
      * requestToken()
      */
@@ -119,18 +103,27 @@ class ZEI {
     /**
      * Returns HTML content for an object (on embed) HTML tag
      * Callback is automatically set with the right scheme (HTTP or HTTPS)
+     * @param bool $b2b
+     * @param bool $b2c
+     * @param null $callback
      * @return string
      */
-    function getModule() {
-        if(!$this->token)
-            return '" style="display:none"></object>'.$this->error.'<object style="display:none'; // Owwwwwyeaaahhhhhhhh
-        $params = '?t='.$this->token;
-        if(!$this->window) {
-            $params .= '&c=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+    function getModuleUrl($b2b = true, $b2c = true, $callback = null) {
+        // Set id
+        $params = '?token='.$this->token;
+
+        // Is B2B or/and B2C
+        $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
+
+        // Set callback
+        if($callback === null && !$this->window) {
+            $params .= '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
                     || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
                     && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
                     ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         }
+
+        // URL for object module
         return $this->api.'module'.$params;
     }
 
@@ -140,11 +133,11 @@ class ZEI {
      * @param $offerId
      * @return bool
      */
-    function validateOffer($token, $offerId) {
+    function validateOffer($offerId) {
         $request = json_decode(file_get_contents($this->api.'company/offer', false, stream_context_create([
             'http'=>[
                 'method' => "GET", 'timeout' => $this->timeout,
-                'header' => "token: ".$token."\r\noffer: ".$offerId."\r\nlocale: ".$this->locale."\r\n"]
+                'header' => "token: ".$this->token."\r\noffer: ".$offerId."\r\nlocale: ".$this->locale."\r\n"]
         ])), true);
         if($request)
             if($request['success'])
@@ -153,15 +146,22 @@ class ZEI {
         else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
         return false;
     }
-}
 
-/**
- * @return string
- */
-function deploy() {
-    $zei = new ZEI();
-    $zei->requestToken();
-    return $zei->getModule();
+    /**
+     * Set the error var only if you enabled debug
+     * @param $message
+     */
+    private function setError($message) {
+        if($this->debug) $this->error = $message;
+    }
+
+    /**
+     * Set token
+     * @param $token
+     */
+    function setToken($token) {
+        $this->token = $token;
+    }
 }
 
 // Thank you for saving pandas ;)
