@@ -84,6 +84,7 @@ class ZEI {
     /**
      * Request a token with a PHP GET procedure
      * requestToken()
+     * @return string token or null
      */
     function requestToken() {
         $request = json_decode(file_get_contents($this->api.'token', false, stream_context_create([
@@ -93,12 +94,14 @@ class ZEI {
         ])), true);
         if($request)
             if($request['success'])
-                if($request['token'])
+                if($request['token']) {
                     $this->token = $request['token'];
-                else $this->setError('Token missing into the request');
+                    return $request['token'];
+                } else $this->setError('Token missing into the request');
             else $this->setError('Server reached with an error : "'.$request['message'].'"');
         else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
         if($this->debug) var_dump($this->error);
+        return null;
     }
 
     /**
@@ -163,6 +166,13 @@ class ZEI {
      */
     function setToken($token) {
         $this->token = $token;
+    }
+
+    /**
+     * Get token
+     */
+    function getToken() {
+        return $this->token;
     }
 }
 
