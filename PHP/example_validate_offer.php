@@ -16,7 +16,7 @@
     <h2>Current token : <?=$token?></h2>
 
     <?php
-        if($zei->validateOffer(2)) {
+        if($zei->validateOffer(2, 1)) {
             echo "Validation effectuée :)";
         } else {
             echo "Validation échouée :(";
