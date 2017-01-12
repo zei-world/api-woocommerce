@@ -8,9 +8,9 @@
         <title>ZEI API - Full PHP example</title>
         <style>
             #ZEI {
-                /* Ratio : 2.5 */
-                width: 320px; /* Max : 1375 */
-                height: 128px; /* Max : 550 */
+                /* Ratio : 4.(1/3) */
+                width: 360px;
+                height: 60px;
             }
             /* DEMO */
             body { margin: 60px; line-height: 20px; }
