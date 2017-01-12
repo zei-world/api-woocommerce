@@ -7,9 +7,9 @@ Zero ecoimpact API
 **HEADERS**
 - id : API id
 - secret: API secret
-- b2b (OPTIONAL) : Ask for company and organization profiles (0 / 1)
-- b2c (OPTIONAL) : Ask for user profiles (0 / 1)
-- locale (OPTIONAL) : Langage ('fr' or 'en')
+- b2b (OPTIONAL, default = 1) : Ask for company and organization profiles ("0" or "1")
+- b2c (OPTIONAL, default = 1) : Ask for user profiles ("0" or "1")
+- locale (OPTIONAL, default = 'fr') : Language ("fr" or "en")
 
 **LOGIC**
 - Vérifie les valeurs des headers envoyés et si l'IP cliente est présente
@@ -28,7 +28,7 @@ Zero ecoimpact API
 **HEADERS**
 - token : generated valid token
 - offer: offer id
-- amount: applied quantity
+- amount (OPTIONAL, default = 1) : applied quantity
 
 **LOGIC**
 - Vérifie les valeurs des headers envoyés et si l'IP cliente est présente
@@ -47,7 +47,7 @@ Zero ecoimpact API
 -------------------
 **HEADERS**
 - token : generated valid token
-- reward: offer id
+- reward: reward id
 
 **LOGIC**
 - Vérifie les valeurs des headers envoyés et si l'IP cliente est présente

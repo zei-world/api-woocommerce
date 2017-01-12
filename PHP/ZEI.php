@@ -136,13 +136,14 @@ class ZEI {
      * Validate an offer with a PHP GET procedure
      * @param $token
      * @param $offerId
+     * @param $amount
      * @return bool
      */
-    function validateOffer($offerId) {
+    function validateOffer($offerId, $amount) {
         $request = json_decode(file_get_contents($this->api.'company/offer', false, stream_context_create([
             'http'=>[
                 'method' => "GET", 'timeout' => $this->timeout,
-                'header' => "token: ".$this->token."\r\noffer: ".$offerId."\r\nlocale: ".$this->locale."\r\n"]
+                'header' => "token: ".$this->token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\nlocale: ".$this->locale."\r\n"]
         ])), true);
         if($request)
             if($request['success'])

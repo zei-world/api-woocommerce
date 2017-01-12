@@ -46,6 +46,6 @@ Offer Validation
     require_once('ZEI.php'); // (1) Includes the main API class
     $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
     $zei->setToken(''); // (3) Retreaves the token
-    $zei->validateOffer(0); // (4) Validate offer with its id
+    $zei->validateOffer(0, 1); // (4) Validate offer with its id and the amount of products purchased
 ?>
 ```
