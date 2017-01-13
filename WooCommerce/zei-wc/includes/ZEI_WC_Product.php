@@ -21,47 +21,36 @@ class ZEI_WC_Product {
     public function zei_offers_add_fields() {
         global $woocommerce, $post;
 
-        $options = get_option('woocommerce_zei-wc_settings');
-        if($options && $options['zei_api_key'] && $options['zei_api_secret']) {
-            // API
+        if(isset($_SESSION['zeiToken'])) {
             include_once 'ZEI_WC_API.php';
-            $api = new ZEI_WC_API();
+            $group = false;
 
-            // Token
-            if($api->requestToken($options['zei_api_key'], $options['zei_api_secret'])) {
-                $group = false;
-
-                // OFFERS
-                $offers = $api->getOffersList();
-                if($offers) {
-                    echo '<div class="options_group">'; $group = true;
-                    woocommerce_wp_select(
-                        array(
-                            'id'      => 'zei_offer',
-                            'label'   => __('Zero ecoimpact offer', 'woocommerce'),
-                            'options' => ["disabled" => ""] + $offers
-                        )
-                    );
-                }
-
-                // REWARDS
-                $rewards = $api->getRewardsList();
-                if($rewards) {
-                    if(!$group) {
-                        echo '<div class="options_group">';
-                        $group = true;
-                    }
-                    woocommerce_wp_select(
-                        array(
-                            'id'      => 'zei_reward',
-                            'label'   => __('Zero ecoimpact reward', 'woocommerce'),
-                            'options' => ["disabled" => ""] + $rewards
-                        )
-                    );
-                }
-
-                if($group) echo '</div>';
+            // OFFERS
+            $offers = ZEI_WC_API::getOffersList($_SESSION['zeiToken']);
+            if($offers) {
+                echo '<div class="options_group">'; $group = true;
+                woocommerce_wp_select(array(
+                    'id'      => 'zei_offer',
+                    'label'   => __('Zero ecoimpact offer', 'woocommerce'),
+                    'options' => ["disabled" => ""] + $offers
+                ));
             }
+
+            // REWARDS
+            $rewards = ZEI_WC_API::getRewardsList($_SESSION['zeiToken']);
+            if($rewards) {
+                if(!$group) {
+                    echo '<div class="options_group">';
+                    $group = true;
+                }
+                woocommerce_wp_select(array(
+                    'id'      => 'zei_reward',
+                    'label'   => __('Zero ecoimpact reward', 'woocommerce'),
+                    'options' => ["disabled" => ""] + $rewards
+                ));
+            }
+
+            if($group) echo '</div>';
         }
     }
 

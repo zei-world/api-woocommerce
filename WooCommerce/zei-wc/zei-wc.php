@@ -35,14 +35,28 @@ class ZEI_WC {
 
             $options = get_option('woocommerce_zei-wc_settings');
             if($options && $options['zei_api_key'] && $options['zei_api_secret']) {
+                $next = true;
 
-                // PRODUCT
-                include_once 'includes/ZEI_WC_Product.php';
-                new ZEI_WC_Product();
+                // TOKEN
+                if(!isset($_SESSION['zeiToken'])) {
+                    include_once 'includes/ZEI_WC_API.php';
+                    $token = ZEI_WC_API::requestToken($options['zei_api_key'], $options['zei_api_secret']);
+                    if($token) {
+                        $_SESSION['zeiToken'] = $token;
+                    } else {
+                        $next = false;
+                    }
+                }
 
-                // CART
-                include_once 'includes/ZEI_WC_Cart.php';
-                new ZEI_WC_Cart();
+                if($next) {
+                    // PRODUCT
+                    include_once 'includes/ZEI_WC_Product.php';
+                    new ZEI_WC_Product();
+
+                    // CART
+                    include_once 'includes/ZEI_WC_Cart.php';
+                    new ZEI_WC_Cart();
+                }
             }
         }
     }
