@@ -6,6 +6,7 @@
  * @author   Nazim from ZEI
  */
 
+if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_Product')):
 
 class ZEI_WC_Product {
@@ -72,7 +73,7 @@ class ZEI_WC_Product {
             $reward = $_POST['zei_reward'];
             if(!empty($reward)) {
                 if($reward === "disabled") $reward = "";
-                update_post_meta($postId, 'zei_rewards', esc_attr($reward));
+                update_post_meta($postId, 'zei_reward', esc_attr($reward));
             }
         }
     }

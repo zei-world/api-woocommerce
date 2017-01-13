@@ -6,6 +6,7 @@
  * @author   Nazim from ZEI
  */
 
+if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {

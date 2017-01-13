@@ -12,10 +12,10 @@
  * Text Domain: zei-wc
  */
 
+if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC')):
 
 class ZEI_WC {
-
 	/**
 	* Construct the plugin.
 	*/

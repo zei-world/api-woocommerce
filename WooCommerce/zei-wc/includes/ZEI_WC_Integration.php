@@ -7,6 +7,7 @@
  * @author   Nazim from ZEI
  */
 
+if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_Integration')):
 
 class ZEI_WC_Integration extends WC_Integration {
