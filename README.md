@@ -3,6 +3,8 @@ Zero ecoimpact API
 
 /api/token
 ----------
+**DESCRIPTION**
+Génère un token pour pouvoir accéder aux commandes de l'API et sauvegarder le compte ZEI connecté 
 
 **HEADERS**
 - id : API id
@@ -25,6 +27,9 @@ Zero ecoimpact API
 
 /api/company/offer
 ------------------
+**DESCRIPTION**
+Valide une offre
+
 **HEADERS**
 - token : generated valid token
 - offer: offer id
@@ -40,6 +45,24 @@ Zero ecoimpact API
 - Supprime le token
 
 **ERROR** : { success: false, message: "[OFFER] ..." }<br/>
+**SUCCESS** : { success: true, message: "..." }
+
+
+/api/company/offers
+-------------------
+**DESCRIPTION**
+Renvoie la liste des offres de l'entreprise
+
+**HEADERS**
+- token : generated valid token
+
+**LOGIC**
+- Vérifie les valeurs des headers envoyés et si l'IP cliente est présente
+- Vérifie la validité du token
+- Compare l'IP du client à celle du DNS des domaines enregistrés
+- Renvoie la liste
+
+**ERROR** : { success: false, message: "[OFFERS] ..." }<br/>
 **SUCCESS** : { success: true, message: "..." }
 
 
@@ -60,4 +83,22 @@ Zero ecoimpact API
 - Supprime le token
 
 **ERROR** : { success: false, message: "[REWARD] ..." }<br/>
+**SUCCESS** : { success: true, message: "..." }
+
+
+/api/company/rewards
+--------------------
+**DESCRIPTION**
+Renvoie la liste des récompenses de l'entreprise
+
+**HEADERS**
+- token : generated valid token
+
+**LOGIC**
+- Vérifie les valeurs des headers envoyés et si l'IP cliente est présente
+- Vérifie la validité du token
+- Compare l'IP du client à celle du DNS des domaines enregistrés
+- Renvoie la liste
+
+**ERROR** : { success: false, message: "[REWARDS] ..." }<br/>
 **SUCCESS** : { success: true, message: "..." }
