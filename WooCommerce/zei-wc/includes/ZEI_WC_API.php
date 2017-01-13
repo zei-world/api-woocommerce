@@ -46,6 +46,10 @@ class ZEI_WC_API {
         return self::$api.'module'.$params;
     }
 
+    public static function validateOffer($token, $offerId, $amount) {
+        $r = self::request('company/offer', "token: ".$token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\n");
+        //var_dump($r);die;
+    }
 }
 
 endif;

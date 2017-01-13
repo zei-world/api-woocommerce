@@ -30,7 +30,7 @@ class ZEI_WC_Product {
             if($offers) {
                 echo '<div class="options_group">'; $group = true;
                 woocommerce_wp_select(array(
-                    'id'      => 'zei_offer',
+                    'id'      => '_zei_offer',
                     'label'   => __('Zero ecoimpact offer', 'woocommerce'),
                     'options' => ["disabled" => ""] + $offers
                 ));
@@ -44,7 +44,7 @@ class ZEI_WC_Product {
                     $group = true;
                 }
                 woocommerce_wp_select(array(
-                    'id'      => 'zei_reward',
+                    'id'      => '_zei_reward',
                     'label'   => __('Zero ecoimpact reward', 'woocommerce'),
                     'options' => ["disabled" => ""] + $rewards
                 ));
@@ -55,15 +55,15 @@ class ZEI_WC_Product {
     }
 
     public function zei_offers_save_fields($postId) {
-        $offer = $_POST['zei_offer'];
+        $offer = $_POST['_zei_offer'];
         if(!empty($offer)) {
             if($offer === "disabled") $offer = "";
-            update_post_meta($postId, 'zei_offer', esc_attr($offer));
+            update_post_meta($postId, '_zei_offer', esc_attr($offer));
         }
-        $reward = $_POST['zei_reward'];
+        $reward = $_POST['_zei_reward'];
         if(!empty($reward)) {
             if($reward === "disabled") $reward = "";
-            update_post_meta($postId, 'zei_reward', esc_attr($reward));
+            update_post_meta($postId, '_zei_reward', esc_attr($reward));
         }
     }
 }
