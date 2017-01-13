@@ -30,8 +30,8 @@ class ZEI_WC_Integration extends WC_Integration {
 		$this->init_settings();
 
 		// Define user set variables
-		$this->api_key = $this->get_option('api_key');
-		$this->api_secret = $this->get_option('api_secret');
+		$this->zei_api_key = $this->get_option('zei_api_key');
+		$this->zei_api_secret = $this->get_option('zei_api_secret');
 
 		// Actions
 		add_action('woocommerce_update_options_integration_'.$this->id, array($this, 'process_admin_options'));
@@ -47,14 +47,14 @@ class ZEI_WC_Integration extends WC_Integration {
 	 */
 	public function init_form_fields() {
 		$this->form_fields = array(
-			'api_key' => array(
+			'zei_api_key' => array(
 				'title'             => __('API Key', 'woocommerce-zei-wc'),
 				'type'              => 'text',
 				'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
 				'desc_tip'          => true,
 				'default'           => ''
 			),
-            'api_secret' => array(
+            'zei_api_secret' => array(
                 'title'             => __('API Secret', 'woocommerce-zei-wc'),
                 'type'              => 'text',
                 'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
@@ -68,10 +68,10 @@ class ZEI_WC_Integration extends WC_Integration {
 	 * @see process_admin_options()
 	 */
 	public function sanitize_settings($settings) {
-		if(isset($settings) && isset($settings['api_key']))
-		    $settings['api_key'] = strtolower($settings['api_key']);
-        if(isset($settings) && isset($settings['api_secret']))
-            $settings['api_secret'] = strtolower($settings['api_secret']);
+		if(isset($settings) && isset($settings['zei_api_key']))
+		    $settings['zei_api_key'] = strtolower($settings['zei_api_key']);
+        if(isset($settings) && isset($settings['zei_api_secret']))
+            $settings['zei_api_secret'] = strtolower($settings['zei_api_secret']);
 		return $settings;
 	}
 
@@ -79,7 +79,7 @@ class ZEI_WC_Integration extends WC_Integration {
 	 * Validate the API key
 	 * @see validate_settings_fields()
 	 */
-	public function validate_api_key_field($key) {
+	public function validate_zei_api_key_field($key) {
 		$value = $_POST[$this->plugin_id.$this->id.'_'.$key];
 		if(isset($value) && 32 !== strlen($value))
             WC_Admin_Settings::add_error(esc_html__('Looks like you made a mistake with the API Key field. '
@@ -91,7 +91,7 @@ class ZEI_WC_Integration extends WC_Integration {
      * Validate the API secret
      * @see validate_settings_fields()
      */
-    public function validate_api_secret_field($key) {
+    public function validate_zei_api_secret_field($key) {
         $value = $_POST[$this->plugin_id.$this->id.'_'.$key];
         if(isset($value) && 45 !== strlen($value))
             WC_Admin_Settings::add_error(esc_html__('Looks like you made a mistake with the API Secret field. '
