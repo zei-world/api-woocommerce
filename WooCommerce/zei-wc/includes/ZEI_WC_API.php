@@ -9,7 +9,7 @@
 if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {
-    private $api = "http://zei.local/app_dev.php/api/";
+    private $api = "https://zero-ecoimpact.org/api/";
 
     private $token = null;
 
