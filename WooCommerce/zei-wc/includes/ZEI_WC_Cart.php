@@ -27,7 +27,10 @@ class ZEI_WC_Cart {
 
     public function module() {
         global $woocommerce;
-        if(isset($_SESSION['zeiToken'])) {
+
+        $token = ZEI_WC_API::getToken();
+
+        if($token) {
             $display = false;
             foreach($woocommerce->cart->get_cart() as $item) {
                 if(get_post_meta($item['product_id'], '_zei_offer', true)) {
@@ -36,7 +39,7 @@ class ZEI_WC_Cart {
                 }
             }
             if($display) {
-                $url = ZEI_WC_API::getModuleUrl($_SESSION['zeiToken'], true, true);
+                $url = ZEI_WC_API::getModuleUrl($token, true, true);
                 if($url) echo "<object id=\"ZEI\" width=\"360px\" height=\"60px\" data=\""
                     .$url."\"></object>";
             }
@@ -44,7 +47,8 @@ class ZEI_WC_Cart {
     }
 
     public function token($orderId) {
-        update_post_meta($orderId, '_zei_token', $_SESSION['zeiToken']);
+        $token = ZEI_WC_API::getToken();
+        if($token) update_post_meta($orderId, '_zei_token', $token);
     }
 
     public function completed($orderId) {
@@ -52,10 +56,7 @@ class ZEI_WC_Cart {
             $token = get_post_meta($orderId, '_zei_token', true);
             if($token) {
                 $offerId = get_post_meta($item['product_id'], '_zei_offer', true);
-                if($offerId) {
-                    ZEI_WC_API::validateOffer($token, $offerId, $item['qty']);
-                    unset($_SESSION['zeiToken']);
-                }
+                if($offerId) ZEI_WC_API::validateOffer($token, $offerId, $item['qty']);
             }
         }
     }

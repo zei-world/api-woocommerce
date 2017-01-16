@@ -9,6 +9,8 @@
 if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_Product')):
 
+include_once 'ZEI_WC_API.php';
+
 class ZEI_WC_Product {
     public function __construct() {
         // Display Fields
@@ -21,12 +23,13 @@ class ZEI_WC_Product {
     public function zei_offers_add_fields() {
         global $woocommerce, $post;
 
-        if(isset($_SESSION['zeiToken'])) {
-            include_once 'ZEI_WC_API.php';
+        $token = ZEI_WC_API::getToken();
+
+        if($token) {
             $group = false;
 
             // OFFERS
-            $offers = ZEI_WC_API::getOffersList($_SESSION['zeiToken']);
+            $offers = ZEI_WC_API::getOffersList($token);
             if($offers) {
                 echo '<div class="options_group">'; $group = true;
                 woocommerce_wp_select(array(
@@ -37,7 +40,7 @@ class ZEI_WC_Product {
             }
 
             // REWARDS
-            $rewards = ZEI_WC_API::getRewardsList($_SESSION['zeiToken']);
+            $rewards = ZEI_WC_API::getRewardsList($token);
             if($rewards) {
                 if(!$group) {
                     echo '<div class="options_group">';
