@@ -40,17 +40,19 @@ class ZEI_WC_Product {
             }
 
             // REWARDS
-            $rewards = ZEI_WC_API::getRewardsList($token);
-            if($rewards) {
-                if(!$group) {
-                    echo '<div class="options_group">';
-                    $group = true;
+            if(get_option('woocommerce_enable_coupons') === "yes") {
+                $rewards = ZEI_WC_API::getRewardsList($token);
+                if($rewards) {
+                    if(!$group) {
+                        echo '<div class="options_group">';
+                        $group = true;
+                    }
+                    woocommerce_wp_select(array(
+                        'id'      => '_zei_reward',
+                        'label'   => __('Zero ecoimpact reward', 'woocommerce'),
+                        'options' => ["disabled" => ""] + $rewards
+                    ));
                 }
-                woocommerce_wp_select(array(
-                    'id'      => '_zei_reward',
-                    'label'   => __('Zero ecoimpact reward', 'woocommerce'),
-                    'options' => ["disabled" => ""] + $rewards
-                ));
             }
 
             if($group) echo '</div>';
