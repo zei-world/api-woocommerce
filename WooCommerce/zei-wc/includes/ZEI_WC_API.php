@@ -24,8 +24,8 @@ class ZEI_WC_API {
         return null;
     }
 
-    public static function getToken() {
-        if(!session_id()) session_start();
+    public static function getToken($start = true) {
+        if($start && !session_id()) session_start();
         if(isset($_SESSION['zeiToken'])) return $_SESSION['zeiToken'];
 
         $options = get_option('woocommerce_zei-wc_settings');
@@ -63,6 +63,12 @@ class ZEI_WC_API {
         self::request('company/offer', "token: ".$token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\n");
         if(!session_id()) session_start();
         unset($_SESSION['zeiToken']);
+    }
+
+    public static function codesValidate($code) {
+        $request = self::request('company/codes', "token: ".self::getToken(false)."\r\ncode: ".$code."\r\n");
+        if($request && $request['success'] && $request['message']) return $request['message'];
+        return null;
     }
 }
 
