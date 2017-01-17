@@ -13,6 +13,9 @@ include_once 'ZEI_WC_API.php';
 
 class ZEI_WC_Cart {
     public function __construct() {
+        // Coupon
+        add_filter('woocommerce_get_shop_coupon_data', array($this, "coupon"), 10, 2);
+
         // Module
         add_action('woocommerce_after_checkout_billing_form', array($this, "module"));
 
@@ -23,6 +26,45 @@ class ZEI_WC_Cart {
 
         // Points validated
         add_action('woocommerce_order_status_completed', array($this, "completed"));
+    }
+
+    private function couponExists($coupon) {
+        global $wpdb;
+        return 0 < $wpdb->get_var("select count(ID) from $wpdb->posts"
+            ." where post_title = '".$coupon."' and post_status = 'publish'"
+        );
+    }
+
+    public function coupon($valid, $coupon) {
+        if(substr($coupon, 0, 11) === 'zei_reward_') return false;
+        $reward = ZEI_WC_API::codesValidate(strtoupper($coupon));
+        if($reward && !$this->couponExists($coupon)) {
+            if($this->couponExists("zei_reward_".$reward)) {
+                $model = new WC_Coupon('zei_reward_'.$reward);
+                if($model->exists) {
+                    $original = get_post($model->id);
+                    $new = wp_insert_post(array(
+                        'post_title' => $coupon,
+                        'post_type' => 'shop_coupon',
+                        'to_ping' => $original->to_ping,
+                        'menu_order' => $original->menu_order,
+                        'post_content' => '',
+                        'post_excerpt' => $original->post_excerpt,
+                        'post_name' => $coupon,
+                        'post_parent' => $original->post_parent,
+                        'post_password' => $original->post_password,
+                        'post_status' => 'publish',
+                        'comment_status' => $original->comment_status,
+                        'ping_status' => $original->ping_status,
+                        'post_author' => $original->post_author
+                    ));
+                    foreach(get_post_meta($model->id) as $key => $value) add_post_meta($new, $key, $value[0]);
+                    update_post_meta($new, 'usage_limit', 1);
+                    return true;
+                }
+            }
+        }
+        return $valid;
     }
 
     public function module() {

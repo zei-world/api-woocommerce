@@ -40,7 +40,7 @@ class ZEI_WC_Product {
             }
 
             // REWARDS
-            if(get_option('woocommerce_enable_coupons') === "yes") {
+            /*if(get_option('woocommerce_enable_coupons') === "yes") {
                 $rewards = ZEI_WC_API::getRewardsList($token);
                 if($rewards) {
                     if(!$group) {
@@ -53,7 +53,7 @@ class ZEI_WC_Product {
                         'options' => ["disabled" => ""] + $rewards
                     ));
                 }
-            }
+            } // DESACTIVE CAR NON UTILISE */
 
             if($group) echo '</div>';
         }
