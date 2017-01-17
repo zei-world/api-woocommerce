@@ -41,7 +41,6 @@ class ZEI_WC_API {
     public static function getOffersList($token) {
         $request = self::request('company/offers', "token: ".$token."\r\n");
         if($request['message'] == '[OFFERS] Token has been used or not exist') self::getToken(false, true);
-        error_log(implode($request));
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
