@@ -60,6 +60,7 @@ class ZEI_WC_Cart {
                     ));
                     foreach(get_post_meta($model->id) as $key => $value) add_post_meta($new, $key, $value[0]);
                     update_post_meta($new, 'usage_limit', 1);
+                    update_post_meta($new, '_zei_reward', $reward);
                     return true;
                 }
             }
@@ -94,11 +95,29 @@ class ZEI_WC_Cart {
     }
 
     public function completed($orderId) {
-        foreach(wc_get_order($orderId)->get_items() as $item) {
+        if(!session_id()) session_start();
+        $order = wc_get_order($orderId);
+        foreach($order->get_items() as $item) {
             $token = get_post_meta($orderId, '_zei_token', true);
             if($token) {
+                // OFFERS
                 $offerId = get_post_meta($item['product_id'], '_zei_offer', true);
                 if($offerId) ZEI_WC_API::validateOffer($token, $offerId, $item['qty']);
+
+                // REWARDS
+                foreach($order->get_used_coupons() as $code) {
+                    $coupon = new WC_Coupon($code);
+                    if($coupon->exists) {
+                        $meta = get_post_meta($coupon->id, '_zei_reward', true);
+                        if($meta) {
+                            $reward = ZEI_WC_API::codesValidate(strtoupper($code));
+                            if($reward == $meta) ZEI_WC_API::validateReward($token, $reward);
+                        }
+                    }
+                }
+
+                // END OF TOKEN
+                unset($_SESSION['zeiToken']);
             }
         }
     }

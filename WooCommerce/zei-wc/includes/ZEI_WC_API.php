@@ -61,8 +61,10 @@ class ZEI_WC_API {
 
     public static function validateOffer($token, $offerId, $amount) {
         self::request('company/offer', "token: ".$token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\n");
-        if(!session_id()) session_start();
-        unset($_SESSION['zeiToken']);
+    }
+
+    public static function validateReward($token, $rewardId) {
+        self::request('company/reward', "token: ".$token."\r\nreward: ".$rewardId."\r\n");
     }
 
     public static function codesValidate($code) {
