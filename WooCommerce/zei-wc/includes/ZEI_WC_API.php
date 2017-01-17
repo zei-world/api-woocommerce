@@ -24,12 +24,13 @@ class ZEI_WC_API {
         return null;
     }
 
-    public static function getToken($start = true) {
+    public static function getToken($start = true, $force = false) {
         if($start && !session_id()) session_start();
-        if(isset($_SESSION['zeiToken'])) return $_SESSION['zeiToken'];
+        if(!$force && isset($_SESSION['zeiToken'])) return $_SESSION['zeiToken'];
 
         $options = get_option('woocommerce_zei-wc_settings');
         $token = self::requestToken($options['zei_api_key'], $options['zei_api_secret']);
+
         if($token) {
             $_SESSION['zeiToken'] = $token;
             return $token;
@@ -39,12 +40,15 @@ class ZEI_WC_API {
 
     public static function getOffersList($token) {
         $request = self::request('company/offers', "token: ".$token."\r\n");
+        if($request['message'] == '[OFFERS] Token has been used or not exist') self::getToken(false, true);
+        error_log(implode($request));
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
 
     public static function getRewardsList($token) {
         $request = self::request('company/rewards', "token: ".$token."\r\n");
+        if($request['message'] == '[REWARDS] Token has been used or not exist') self::getToken(false, true);
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
@@ -60,15 +64,18 @@ class ZEI_WC_API {
     }
 
     public static function validateOffer($token, $offerId, $amount) {
-        self::request('company/offer', "token: ".$token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\n");
+        $r = self::request('company/offer', "token: ".$token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\n");
+        if($r['message'] == '[OFFER] Token has been used or not exist') self::getToken(false, true);
     }
 
     public static function validateReward($token, $rewardId) {
-        self::request('company/reward', "token: ".$token."\r\nreward: ".$rewardId."\r\n");
+        $r = self::request('company/reward', "token: ".$token."\r\nreward: ".$rewardId."\r\n");
+        if($r['message'] == '[REWARD] Token has been used or not exist') self::getToken(false, true);
     }
 
     public static function codesValidate($code) {
         $request = self::request('company/codes', "token: ".self::getToken(false)."\r\ncode: ".$code."\r\n");
+        if($request['message'] == '[CODES] Token has been used or not exist') self::getToken(false, true);
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
