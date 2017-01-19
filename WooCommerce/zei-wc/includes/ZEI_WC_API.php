@@ -14,7 +14,8 @@ class ZEI_WC_API {
 
     private static function request($url, $header) {
         return json_decode(file_get_contents(self::$api.$url, false, stream_context_create([
-            'http' => [ 'method' => "GET", 'timeout' => 2, 'header' => $header ]
+            'http' => [ 'method' => "GET", 'timeout' => 2, 'header' => $header ],
+            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
         ])), true);
     }
 
