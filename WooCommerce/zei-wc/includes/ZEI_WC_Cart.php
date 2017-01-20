@@ -111,7 +111,7 @@ class ZEI_WC_Cart {
                         $meta = get_post_meta($coupon->id, '_zei_reward', true);
                         if($meta) {
                             $reward = ZEI_WC_API::codesValidate(strtoupper($code));
-                            if($reward == $meta) ZEI_WC_API::validateReward($token, $reward);
+                            if($reward == $meta) ZEI_WC_API::validateReward($token, $reward, $order->get_total());
                         }
                     }
                 }

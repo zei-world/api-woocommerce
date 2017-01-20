@@ -68,8 +68,8 @@ class ZEI_WC_API {
         if($r['message'] == '[OFFER] Token has been used or not exist') self::getToken(false, true);
     }
 
-    public static function validateReward($token, $rewardId) {
-        $r = self::request('company/reward', "token: ".$token."\r\nreward: ".$rewardId."\r\n");
+    public static function validateReward($token, $rewardId, $amount = null) {
+        $r = self::request('company/reward', "token: ".$token."\r\nreward: ".$rewardId."\r\namount: ".$amount."\r\n");
         if($r['message'] == '[REWARD] Token has been used or not exist') self::getToken(false, true);
     }
 
