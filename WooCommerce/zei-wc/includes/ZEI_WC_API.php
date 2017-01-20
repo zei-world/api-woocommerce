@@ -14,25 +14,31 @@ class ZEI_WC_API {
 
     private static function request($url, $headers) {
         $url = self::$api.$url;
-        if(function_exists('curl_version')) {
+        /*if(function_exists('curl_version')) {
             $header = [];
             foreach($headers as $k => $v) array_push($header, $k.": ".$v);
             $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_SSLVERSION, 3);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            curl_setopt($ch, CURLOPT_VERBOSE, 0);
+            curl_setopt($ch, CURLOPT_HEADER, FALSE);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             $response = curl_exec($ch);
             curl_close($ch);
-        } else {
+        } else {*/
             $header = "";
             foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
             $response = file_get_contents($url, false, stream_context_create([
                 'http' => [ 'method' => "GET", 'timeout' => 2, 'header' => $header ],
                 'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
             ]));
-        }
+        //}
+        var_dump($response); // DEBUG
         if(!$response) return null;
         return json_decode($response, true);
     }
