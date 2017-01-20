@@ -34,7 +34,7 @@ User Module
 </head>
 <body>
     <!-- (4) Display the HTML user module (params : isB2B, isB2C, redirect_uri/callback) -->
-    <object id="ZEI" data="<?=$zei->getModule(true, true)?>"></object>
+    <object id="ZEI" data="<?=$zei->getModuleUrl(true, true)?>"></object>
 </body>
 </html>
 ```
