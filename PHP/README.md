@@ -20,7 +20,7 @@ User Module
 <?php
     require_once('ZEI.php'); // (1) Includes the main API class
     $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
-    $zei->requestToken(); // (3) Request a token for the session
+    $_SESSION['zeiToken'] = $zei->requestToken(); // (3) Request a token for the session
 ?>
 <html>
 <head>
@@ -45,7 +45,7 @@ Offer Validation
 <?php
     require_once('ZEI.php'); // (1) Includes the main API class
     $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
-    $zei->setToken(''); // (3) Retreaves the token
+    $zei->setToken($_SESSION['zeiToken']); // (3) Retreaves the token
     $zei->validateOffer(0, 1); // (4) Validate offer with its id and the amount of products purchased
 ?>
 ```
