@@ -74,11 +74,14 @@ class ZEI_WC_Cart {
         $token = ZEI_WC_API::getToken();
 
         if($token) {
-            $display = false;
-            foreach($woocommerce->cart->get_cart() as $item) {
-                if(get_post_meta($item['product_id'], '_zei_offer', true)) {
-                    $display = true;
-                    break;
+            $options = get_option('woocommerce_zei-wc_settings');
+            $display = $options && isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0;
+            if($display) {
+                foreach($woocommerce->cart->get_cart() as $item) {
+                    if(get_post_meta($item['product_id'], '_zei_offer', true)) {
+                        $display = true;
+                        break;
+                    }
                 }
             }
             if($display) {
@@ -101,7 +104,9 @@ class ZEI_WC_Cart {
             $token = get_post_meta($orderId, '_zei_token', true);
             if($token) {
                 // OFFERS
-                $offerId = get_post_meta($item['product_id'], '_zei_offer', true);
+                $options = get_option('woocommerce_zei-wc_settings');
+                $offerId = ($options && isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0)
+                    ? $options['zei_global_offer'] : get_post_meta($item['product_id'], '_zei_offer', true);
                 if($offerId) ZEI_WC_API::validateOffer($token, $offerId, $item['qty']);
 
                 // REWARDS

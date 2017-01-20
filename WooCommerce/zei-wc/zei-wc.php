@@ -36,8 +36,10 @@ class ZEI_WC {
             $options = get_option('woocommerce_zei-wc_settings');
             if($options && $options['zei_api_key'] && $options['zei_api_secret']) {
                 // PRODUCT
-                include_once 'includes/ZEI_WC_Product.php';
-                new ZEI_WC_Product();
+                if(!isset($options['zei_global_offer']) || $options['zei_global_offer'] == 0) {
+                    include_once 'includes/ZEI_WC_Product.php';
+                    new ZEI_WC_Product();
+                }
 
                 // CART
                 include_once 'includes/ZEI_WC_Cart.php';

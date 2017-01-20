@@ -33,6 +33,7 @@ class ZEI_WC_Integration extends WC_Integration {
 		// Define user set variables
 		$this->zei_api_key = $this->get_option('zei_api_key');
 		$this->zei_api_secret = $this->get_option('zei_api_secret');
+		$this->zei_global_offer = $this->get_option('zei_global_offer');
 
 		// Actions
 		add_action('woocommerce_update_options_integration_'.$this->id, array($this, 'process_admin_options'));
@@ -47,21 +48,43 @@ class ZEI_WC_Integration extends WC_Integration {
 	 * @return void
 	 */
 	public function init_form_fields() {
-		$this->form_fields = array(
-			'zei_api_key' => array(
-				'title'             => __('API Key', 'woocommerce-zei-wc'),
-				'type'              => 'text',
-				'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
-				'desc_tip'          => true,
-				'default'           => ''
-			),
-            'zei_api_secret' => array(
-                'title'             => __('API Secret', 'woocommerce-zei-wc'),
-                'type'              => 'text',
-                'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
-                'desc_tip'          => true,
-                'default'           => '')
-		);
+        $fields = [];
+
+        $fields['zei_api_key'] = array(
+            'title'             => __('API Key', 'woocommerce-zei-wc'),
+            'type'              => 'text',
+            'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
+            'desc_tip'          => true,
+            'default'           => ''
+        );
+
+        $fields['zei_api_secret'] = array(
+            'title'             => __('API Secret', 'woocommerce-zei-wc'),
+            'type'              => 'text',
+            'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
+            'desc_tip'          => true,
+            'default'           => ''
+        );
+
+        // TODO : Vérifier pourquoi cet appel est effectué sur chaque page (Nazim)
+        if($this->get_option('zei_api_key') && $this->get_option('zei_api_secret')) {
+            $token = ZEI_WC_API::getToken();
+            if($token) {
+                $offers = ZEI_WC_API::getOffersList($token);
+                if($offers) {
+                    $fields['zei_global_offer'] = array(
+                        'title'             => __('Global offer', 'woocommerce-zei-wc'),
+                        'type'              => 'select',
+                        'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
+                        'desc_tip'          => true,
+                        'options'           => [0 => ''] + $offers,
+                        'default'           => ''
+                    );
+                }
+            }
+        }
+
+        $this->form_fields = $fields;
 	}
 
 	/**
@@ -98,6 +121,14 @@ class ZEI_WC_Integration extends WC_Integration {
             WC_Admin_Settings::add_error(esc_html__('Looks like you made a mistake with the API Secret field. '
                 .'Try again or contact us if the exact key isn\'t working.', 'woocommerce-zei-wc'));
         return $value;
+    }
+
+    /**
+     * Validate the global offer
+     * @see validate_settings_fields()
+     */
+    public function validate_zei_global_offer_field($key) {
+        return $_POST[$this->plugin_id.$this->id.'_'.$key];
     }
 }
 
