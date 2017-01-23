@@ -2,7 +2,7 @@
 title: /token
 position: 1.0
 type: get
-description: Generate a token code
+description: Generate an auth token code
 right_code: |
   ~~~ json
     {
@@ -22,10 +22,10 @@ right_code: |
   {: title="Error" }
 ---
 id
-: Your Company API id
+: Your ZEI API id
 
 secret
-: Your Company API secret
+: Your ZEI API secret
 
 b2b
 : Display company and organization profiles (default : 1) [OPTIONAL]
