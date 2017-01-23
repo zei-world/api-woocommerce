@@ -21,7 +21,7 @@ gems:
 defaults:
   -
     scope:
-      path: ""
+      path: "/API/"
     values:
       layout: default
 
