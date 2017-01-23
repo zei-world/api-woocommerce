@@ -3,7 +3,7 @@
  * Plugin Name: Zero ecoimpact - WooCommerce
  * Plugin URI: https://zero-ecoimpact.org
  * Description: WooCommerce extension for Zero ecoimpact API
- * Version: 1.0
+ * Version: 1.1
  * Author: Nazim from ZEI
  * Author URI: https://zero-ecoimpact.org/fr/profile/1
  * Requires at least: 4.4

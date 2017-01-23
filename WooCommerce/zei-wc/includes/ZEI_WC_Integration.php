@@ -66,8 +66,11 @@ class ZEI_WC_Integration extends WC_Integration {
             'default'           => ''
         );
 
-        // TODO : Vérifier pourquoi cet appel est effectué sur chaque page (Nazim)
-        if($this->get_option('zei_api_key') && $this->get_option('zei_api_secret')) {
+        if(
+            isset($_GET['page']) && $_GET['page'] === "wc-settings" &&
+            isset($_GET['tab']) && $_GET['tab'] === "integration" &&
+            $this->get_option('zei_api_key') && $this->get_option('zei_api_secret')
+        ) {
             $token = ZEI_WC_API::getToken();
             if($token) {
                 $offers = ZEI_WC_API::getOffersList($token);
@@ -128,7 +131,9 @@ class ZEI_WC_Integration extends WC_Integration {
      * @see validate_settings_fields()
      */
     public function validate_zei_global_offer_field($key) {
-        return $_POST[$this->plugin_id.$this->id.'_'.$key];
+        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key]))
+            return $_POST[$this->plugin_id.$this->id.'_'.$key];
+        return null;
     }
 }
 

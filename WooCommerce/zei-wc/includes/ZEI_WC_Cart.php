@@ -22,8 +22,6 @@ class ZEI_WC_Cart {
         // Token
         add_action('woocommerce_new_order', array($this, "token"));
 
-        /* TODO : Modifier le tableau des détails avec les points gagnés sur ZEI */
-
         // Points validated
         add_action('woocommerce_order_status_completed', array($this, "completed"));
     }
@@ -76,7 +74,7 @@ class ZEI_WC_Cart {
         if($token) {
             $options = get_option('woocommerce_zei-wc_settings');
             $display = $options && isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0;
-            if($display) {
+            if(!$display) {
                 foreach($woocommerce->cart->get_cart() as $item) {
                     if(get_post_meta($item['product_id'], '_zei_offer', true)) {
                         $display = true;

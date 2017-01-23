@@ -10,35 +10,22 @@ if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {
-    private static $api = "https://zero-ecoimpact.org/api/";
+    private static $URLs = [
+        "https://zero-ecoimpact.org/api/",
+        "http://zero-ecoimpact.org/api/"
+    ];
 
     private static function request($url, $headers) {
-        $url = self::$api.$url;
-        /*if(function_exists('curl_version')) {
-            $header = [];
-            foreach($headers as $k => $v) array_push($header, $k.": ".$v);
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_SSLVERSION, 3);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 2);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            curl_setopt($ch, CURLOPT_VERBOSE, 0);
-            curl_setopt($ch, CURLOPT_HEADER, FALSE);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            $response = curl_exec($ch);
-            curl_close($ch);
-        } else {*/
-            $header = "";
-            foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
-            $response = file_get_contents($url, false, stream_context_create([
+        $header = "";
+        foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
+        $response = null;
+        foreach(self::$URLs as $main) {
+            $response = file_get_contents($main.$url, false, stream_context_create([
                 'http' => [ 'method' => "GET", 'timeout' => 2, 'header' => $header ],
                 'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
             ]));
-        //}
-        var_dump($response); // DEBUG
+            if($response) break;
+        }
         if(!$response) return null;
         return json_decode($response, true);
     }
@@ -84,7 +71,7 @@ class ZEI_WC_API {
         $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
 
         // URL for object module
-        return self::$api.'module'.$params;
+        return self::$URLs[0].'module'.$params;
     }
 
     public static function validateOffer($token, $offerId, $amount) {
