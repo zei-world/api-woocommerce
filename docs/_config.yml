@@ -11,9 +11,12 @@ collections:
   documentation:
     title: Documentation
     position: 1
+  plugins:
+    title: Plugins
+    position: 2
   api:
     title: APIs
-    position: 2
+    position: 3
 gems:
   - jekyll-sitemap
   - jekyll-seo-tag
