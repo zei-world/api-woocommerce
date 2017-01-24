@@ -3,20 +3,13 @@ title: Getting Started
 position: 1
 ---
 
-Welcome to our API.
+Welcome to the ZEI API !
 
 This API document is designed for those interested in developing for our platform.
 
 This API is still under development and will evolve.
 
-You'll succeed if you do this.
-{: .success }
+You need to be authenticated by a **token** for all API requests (except the one that gives you the token).
 
-Here's some useful information.
-{: .info }
-
-Something may not happen if you try and do this.
-{: .warning }
-
-Something bad will happen if you do this.
-{: .error }
+In order to get a token with the "/token" GET call, you need to use your *API key* and your *API secret* in "My Tools"
+on your Zero ecoimpact company profile.
