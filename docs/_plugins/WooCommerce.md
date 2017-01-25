@@ -3,27 +3,27 @@ title: WooCommerce
 position: 1
 ---
 
-Installation
-------------
-**WooCommerce must be installed !**
+**You use WordPress with WooCommerce plugin ? Follow those steps !**
 
 1. Install the plugin in WordPress
-  * Upload the "zei-wc" directory on "/wp-content/plugins/" from your WordPress installation (by FTP for example)
-  * Or use the link and install it directly from WordPress (coming soon)
-2. Go to Zero ecoimpact > your company Public Profile > "My Tools" > API
-3. Then, in your WordPress admin panel, go to "WooCommerce" > "Settings" > "Integration" and fill in your ZEI API credentials
-4. From there you'll be able to manage your offers and rewards directly from the concerned products (in "General" tab)
+  * [Dowload this zip archive](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/latest.zip?raw=true)
+  and install it on WordPress : "Plugins" > "Add New" > "Upload Plugin"
+  * Or use the link and install it directly from WordPress (**coming soon**)
+  * Or upload the "zei-wc" directory
+  ([from the repository](https://github.com/zeroecoimpact/API/tree/master/WooCommerce){:target="_blank"})
+  on "/wp-content/plugins/" from your WordPress installation (by FTP for example)
+2. Go to [Zero ecoimpact](https://zero-ecoimpact.org){:target="_blank"} > your company Public Profile > "My Tools" > API
+3. Then, in your WordPress admin panel, go to "WooCommerce" > "Settings" > "Integration" and fill in your ZEI API
+credentials (API secret and API key)
+4. From there you'll be able to manage your offers directly from the concerned products (in "General" tab) and your rewards
 5. Let the magic do !
 
-Coupon codes (rewards)
-----------------------
+**Coupon codes for rewards**
+
+Edited codes on ZEI must work on your online shop, so you need to edit some WooCommerce coupon codes : 
+
 1. First of all, you need to know your reward id (they are listed in your API page on ZEI)
 2. In your WordPress admin panel, go to "WooCommerce" > "Coupons" > "Add Coupon"
 3. Name it EXACTLY as following : "zei_reward_42" (42 being your reward id)
 4. Edit the coupon like you want (according to your ZEI reward)
 5. Let the magic do again !
-
-
-WordPress Plugin Page (coming soon)
-
-[Source code on GitHub](https://github.com/zeroecoimpact/API/tree/master/WooCommerce){:target="_blank"}
