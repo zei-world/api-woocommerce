@@ -1,5 +1,5 @@
 Zero ecoimpact API
 ==================
 
-http://docs.zero-ecoimpact.org
-------------------------------
+[Documentation](http://docs.zero-ecoimpact.org)
+-----------------------------------------------
