@@ -14,7 +14,7 @@ position: 1
   on "/wp-content/plugins/" from your WordPress installation (by FTP for example)
 2. Go to [Zero ecoimpact](https://zero-ecoimpact.org){:target="_blank"} > your company Public Profile > "My Tools" > API
 3. Then, in your WordPress admin panel, go to "WooCommerce" > "Settings" > "Integration" and fill in your ZEI API credentials (API key and API secret)
-4. From there you'll be able to manage your offers directly from each concerned products : in a product from "Products", in "General" tab, you will find "Zero ecoimpact offer" option
+4. From there you'll be able to manage your offers directly from each concerned products : in a product from "Products", in "General" tab, you will find "Zero ecoimpact offer" option which will allow you to link this product to a corresponding specific offer on ZEI
 5. For your rewards, refer to the next section below
 5. Let the magic do !
 
