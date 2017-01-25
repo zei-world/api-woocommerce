@@ -7,9 +7,9 @@
  *  @   @  @       @    @        d8' db 88.       .88.        88   88 88        .88.
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
- *    @   @ @ @ @ @   @             Version 1.1 - PHP Edition
+ *    @   @ @ @ @ @   @             Version 1.2 - PHP Edition
  *     @             @              Zero ecoimpact (https://zero-ecoimpact.org)
- *      @ @ @ @ @ @ @
+ *      @ @ @ @ @ @ @               Nazim from ZEI (nazim.lachter@zero-ecoimpact.org)
  */
 
 /**
@@ -81,26 +81,42 @@ class ZEI {
         if($locale) $this->locale = $locale;
     }
 
+    private function request($path, $headers) {
+        $header = "";
+        foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
+        $response = file_get_contents($this->api.$path, false, stream_context_create([
+            'http' => [ 'method' => "GET", 'timeout' => $this->timeout, 'header' => $header ],
+            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
+        ]));
+        if(!$response) {
+            $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
+            return false;
+        }
+        $output = json_decode($response, true);
+        if($output['success']) return $output;
+        if(isset($output['message'])) $this->setError('Server reached with an error : "'.$output['message'].'"');
+        return false;
+    }
+
     /**
      * Request a token with a PHP GET procedure
      * requestToken()
      * @return string token or null
      */
     function requestToken() {
-        $request = json_decode(file_get_contents($this->api.'token', false, stream_context_create([
-            'http'=>[
-                'method' => "GET", 'timeout' => $this->timeout,
-                'header' => "id: ".$this->id."\r\nsecret: ".$this->secret."\r\n"]
-        ])), true);
-        if($request)
-            if($request['success'])
-                if($request['token']) {
-                    $this->token = $request['token'];
-                    return $request['token'];
-                } else $this->setError('Token missing into the request');
-            else $this->setError('Server reached with an error : "'.$request['message'].'"');
-        else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
-        if($this->debug) var_dump($this->error);
+        $request = $this->request('token', [
+            'id' => $this->id,
+            'secret' => $this->secret
+        ]);
+
+        if($request && isset($request['token'])) {
+            $this->token = $request['token'];
+            return $request['token'];
+        } else {
+            $this->setError('Token missing into the request');
+        }
+
+        if($this->error && $this->debug) var_dump($this->error);
         return null;
     }
 
@@ -134,24 +150,40 @@ class ZEI {
 
     /**
      * Validate an offer with a PHP GET procedure
-     * @param $token
      * @param $offerId
      * @param $amount
      * @return bool
      */
-    function validateOffer($offerId, $amount) {
-        $request = json_decode(file_get_contents($this->api.'company/offer', false, stream_context_create([
-            'http'=>[
-                'method' => "GET", 'timeout' => $this->timeout,
-                'header' => "token: ".$this->token."\r\noffer: ".$offerId."\r\namount: ".$amount."\r\nlocale: ".$this->locale."\r\n"]
-        ])), true);
-        if($request)
-            if($request['success'])
-                return true;
-            else $this->setError('Server reached with an error : "'.$request['message'].'"');
-        else $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
-        return false;
+    function validateOffer($offerId, $amount = null) {
+        if(!$amount) $amount = 1;
+        $request = $this->request('company/offer', [
+            'token' => $this->token,
+            'offer' => $offerId,
+            'amount' => $amount,
+            'locale' => $this->locale
+        ]);
+        if($this->error && $this->debug) var_dump($this->error);
+        return $request;
     }
+
+    /**
+     * Validate a reward with a PHP GET procedure
+     * @param $rewardId
+     * @param $amount
+     * @return bool
+     */
+    function validateReward($rewardId, $amount = null) {
+        if(!$amount) $amount = 1;
+        $request = $this->request('company/reward', [
+            'token' => $this->token,
+            'offer' => $rewardId,
+            'amount' => $amount,
+            'locale' => $this->locale
+        ]);
+        if($this->error && $this->debug) var_dump($this->error);
+        return $request;
+    }
+
 
     /**
      * Set the error var only if you enabled debug
