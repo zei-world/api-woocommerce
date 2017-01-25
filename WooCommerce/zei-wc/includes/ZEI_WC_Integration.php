@@ -66,6 +66,19 @@ class ZEI_WC_Integration extends WC_Integration {
             'default'           => ''
         );
 
+        $fields['zei_module_location'] = array(
+            'title'             => __('Module location', 'woocommerce-zei-wc'),
+            'type'              => 'select',
+            'description'       => __('Location where ZEI account module must appear.', 'woocommerce-zei-wc'),
+            'desc_tip'          => true,
+            'options'           => [
+                0 => 'On "Additional Information" (recommended)',
+                1 => 'At the end of "Billing Details" (if hidden)',
+                //2 => 'On order validation page'
+            ],
+            'default'           => 0
+        );
+
         if(
             isset($_GET['page']) && $_GET['page'] === "wc-settings" &&
             isset($_GET['tab']) && $_GET['tab'] === "integration" &&
@@ -124,6 +137,16 @@ class ZEI_WC_Integration extends WC_Integration {
             WC_Admin_Settings::add_error(esc_html__('Looks like you made a mistake with the API Secret field. '
                 .'Try again or contact us if the exact key isn\'t working.', 'woocommerce-zei-wc'));
         return $value;
+    }
+
+    /**
+     * Validate the module location
+     * @see validate_settings_fields()
+     */
+    public function validate_zei_module_location_field($key) {
+        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key]))
+            return $_POST[$this->plugin_id.$this->id.'_'.$key];
+        return null;
     }
 
     /**

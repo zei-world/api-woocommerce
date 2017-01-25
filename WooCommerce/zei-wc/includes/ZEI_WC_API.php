@@ -21,7 +21,7 @@ class ZEI_WC_API {
         $response = null;
         foreach(self::$URLs as $main) {
             $response = file_get_contents($main.$url, false, stream_context_create([
-                'http' => [ 'method' => "GET", 'timeout' => 2, 'header' => $header ],
+                'http' => [ 'method' => "GET", 'timeout' => 10, 'header' => $header ],
                 'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
             ]));
             if($response) break;
@@ -77,11 +77,13 @@ class ZEI_WC_API {
     public static function validateOffer($token, $offerId, $amount) {
         $r = self::request('company/offer', ['token' => $token, 'offer' => $offerId, 'amount' => $amount]);
         if($r['message'] == '[OFFER] Token has been used or not exist') self::getToken(false, true);
+        return $r['success'];
     }
 
     public static function validateReward($token, $rewardId, $amount) {
         $r = self::request('company/reward', ['token' => $token, 'reward' => $rewardId, 'amount' => $amount]);
         if($r['message'] == '[REWARD] Token has been used or not exist') self::getToken(false, true);
+        return $r['success'];
     }
 
     public static function codesValidate($code) {
