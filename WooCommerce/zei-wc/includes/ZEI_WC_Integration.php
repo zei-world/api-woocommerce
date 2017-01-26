@@ -48,7 +48,7 @@ class ZEI_WC_Integration extends WC_Integration {
 	 * @return void
 	 */
 	public function init_form_fields() {
-        $fields = [];
+        $fields = array();
 
         $fields['zei_api_key'] = array(
             'title'             => __('API Key', 'woocommerce-zei-wc'),
@@ -71,11 +71,11 @@ class ZEI_WC_Integration extends WC_Integration {
             'type'              => 'select',
             'description'       => __('Location where ZEI account module must appear.', 'woocommerce-zei-wc'),
             'desc_tip'          => true,
-            'options'           => [
+            'options'           => array(
                 0 => 'On "Additional Information" (recommended)',
                 1 => 'At the end of "Billing Details" (if hidden)',
                 //2 => 'On order validation page'
-            ],
+            ),
             'default'           => 0
         );
 
@@ -93,7 +93,7 @@ class ZEI_WC_Integration extends WC_Integration {
                         'type'              => 'select',
                         'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
                         'desc_tip'          => true,
-                        'options'           => [0 => ''] + $offers,
+                        'options'           => array(0 => '') + $offers,
                         'default'           => ''
                     );
                 }

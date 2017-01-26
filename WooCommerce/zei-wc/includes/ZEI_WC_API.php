@@ -10,20 +10,20 @@ if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {
-    private static $URLs = [
+    private static $URLs = array(
         "https://zero-ecoimpact.org/api/",
         "http://zero-ecoimpact.org/api/"
-    ];
+    );
 
     private static function request($url, $headers) {
         $header = "";
         foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
         $response = null;
         foreach(self::$URLs as $main) {
-            $response = file_get_contents($main.$url, false, stream_context_create([
-                'http' => [ 'method' => "GET", 'timeout' => 10, 'header' => $header ],
-                'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
-            ]));
+            $response = file_get_contents($main.$url, false, stream_context_create(array(
+                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header),
+                'ssl' => array("verify_peer" => false, "verify_peer_name" => false)
+            )));
             if($response) break;
         }
         if(!$response) return null;
@@ -31,7 +31,7 @@ class ZEI_WC_API {
     }
 
     public static function requestToken($id, $secret) {
-        $request = self::request('token', ['id' => $id, 'secret' => $secret]);
+        $request = self::request('token', array('id' => $id, 'secret' => $secret));
         if($request && $request['success'] && $request['token']) return $request['token'];
         return null;
     }
@@ -51,14 +51,14 @@ class ZEI_WC_API {
     }
 
     public static function getOffersList($token) {
-        $request = self::request('company/offers', ['token' => $token]);
+        $request = self::request('company/offers', array('token' => $token));
         if($request['message'] == '[OFFERS] Token has been used or not exist') self::getToken(false, true);
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
 
     public static function getRewardsList($token) {
-        $request = self::request('company/rewards', ['token' => $token]);
+        $request = self::request('company/rewards', array('token' => $token));
         if($request['message'] == '[REWARDS] Token has been used or not exist') self::getToken(false, true);
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
@@ -75,19 +75,19 @@ class ZEI_WC_API {
     }
 
     public static function validateOffer($token, $offerId, $amount) {
-        $r = self::request('company/offer', ['token' => $token, 'offer' => $offerId, 'amount' => $amount]);
+        $r = self::request('company/offer', array('token' => $token, 'offer' => $offerId, 'amount' => $amount));
         if($r['message'] == '[OFFER] Token has been used or not exist') self::getToken(false, true);
         return $r['success'];
     }
 
     public static function validateReward($token, $rewardId, $amount) {
-        $r = self::request('company/reward', ['token' => $token, 'reward' => $rewardId, 'amount' => $amount]);
+        $r = self::request('company/reward', array('token' => $token, 'reward' => $rewardId, 'amount' => $amount));
         if($r['message'] == '[REWARD] Token has been used or not exist') self::getToken(false, true);
         return $r['success'];
     }
 
     public static function codesValidate($code) {
-        $request = self::request('company/codes', ['token' => self::getToken(false), 'code' => $code]);
+        $request = self::request('company/codes', array('token' => self::getToken(false), 'code' => $code));
         if($request['message'] == '[CODES] Token has been used or not exist') self::getToken(false, true);
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;

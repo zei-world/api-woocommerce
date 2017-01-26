@@ -35,7 +35,7 @@ class ZEI_WC_Product {
                 woocommerce_wp_select(array(
                     'id'      => '_zei_offer',
                     'label'   => __('Zero ecoimpact offer', 'woocommerce'),
-                    'options' => ["disabled" => ""] + $offers
+                    'options' => array("disabled" => "") + $offers
                 ));
             }
 
@@ -50,7 +50,7 @@ class ZEI_WC_Product {
                     woocommerce_wp_select(array(
                         'id'      => '_zei_reward',
                         'label'   => __('Zero ecoimpact reward', 'woocommerce'),
-                        'options' => ["disabled" => ""] + $rewards
+                        'options' => array("disabled" => "") + $rewards
                     ));
                 }
             } // DESACTIVE CAR NON UTILISE */
