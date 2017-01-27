@@ -7,7 +7,7 @@ right_code: |
   ~~~ json
     {
       "success": true,
-      "token": "02047c83e17e11e69c5c029e5cda3cbb",
+      "token": "02047c83-e17e-11e6-9c5c-029e5cda3cbb",
       "message": "Token ready for usage, have some turfu :)"
     }
   ~~~
