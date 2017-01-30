@@ -54,7 +54,7 @@ class ZEI_WC_Integration extends WC_Integration {
             'title'             => __('API Key', 'woocommerce-zei-wc'),
             'type'              => 'text',
             'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
-            'desc_tip'          => true,
+            'desc_tip'          => false,
             'default'           => ''
         );
 
@@ -62,15 +62,22 @@ class ZEI_WC_Integration extends WC_Integration {
             'title'             => __('API Secret', 'woocommerce-zei-wc'),
             'type'              => 'text',
             'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
-            'desc_tip'          => true,
+            'desc_tip'          => false,
             'default'           => ''
+        );
+
+        $fields['zei_api_https'] = array(
+            'title'             => __('Use HTTPS', 'woocommerce-zei-wc'),
+            'type'              => 'checkbox',
+            'description'       => __('Use or not secure API requests', 'woocommerce-zei-wc'),
+            'default'           => 'yes'
         );
 
         $fields['zei_module_location'] = array(
             'title'             => __('Module location', 'woocommerce-zei-wc'),
             'type'              => 'select',
             'description'       => __('Location where ZEI account module must appear.', 'woocommerce-zei-wc'),
-            'desc_tip'          => true,
+            'desc_tip'          => false,
             'options'           => array(
                 0 => 'After "Order Review" (recommended)',
                 1 => 'On "Additional Information"',
@@ -92,7 +99,7 @@ class ZEI_WC_Integration extends WC_Integration {
                         'title'             => __('Global offer', 'woocommerce-zei-wc'),
                         'type'              => 'select',
                         'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
-                        'desc_tip'          => true,
+                        'desc_tip'          => false,
                         'options'           => array(0 => '') + $offers,
                         'default'           => ''
                     );
@@ -144,8 +151,7 @@ class ZEI_WC_Integration extends WC_Integration {
      * @see validate_settings_fields()
      */
     public function validate_zei_module_location_field($key) {
-        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key]))
-            return $_POST[$this->plugin_id.$this->id.'_'.$key];
+        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key])) return $_POST[$this->plugin_id.$this->id.'_'.$key];
         return null;
     }
 
@@ -154,8 +160,7 @@ class ZEI_WC_Integration extends WC_Integration {
      * @see validate_settings_fields()
      */
     public function validate_zei_global_offer_field($key) {
-        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key]))
-            return $_POST[$this->plugin_id.$this->id.'_'.$key];
+        if(isset($_POST[$this->plugin_id.$this->id.'_'.$key])) return $_POST[$this->plugin_id.$this->id.'_'.$key];
         return null;
     }
 }

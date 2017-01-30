@@ -11,21 +11,31 @@ if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {
     private static $URLs = array(
-        "https://zero-ecoimpact.org/api/",
-        "http://zero-ecoimpact.org/api/"
+        "https" => "https://zero-ecoimpact.org/api/",
+        "http" => "http://zero-ecoimpact.org/api/"
     );
 
     private static function request($url, $headers) {
         $header = "";
         foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
         $response = null;
-        foreach(self::$URLs as $main) {
-            $response = file_get_contents($main.$url, false, stream_context_create(array(
+
+        $tried = false;
+        $options = get_option('woocommerce_zei-wc_settings');
+        if(isset($options['zei_api_https']) && $options['zei_api_https'] == 'yes') {
+            $response = file_get_contents(self::$URLs['https'].$url, false, stream_context_create(array(
                 'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header),
                 'ssl' => array("verify_peer" => false, "verify_peer_name" => false)
             )));
-            if($response) break;
+            $tried = true;
         }
+
+        if(!$tried || !$response) {
+            $response = file_get_contents(self::$URLs['http'].$url, false, stream_context_create(array(
+                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header)
+            )));
+        }
+
         if(!$response) return null;
         return json_decode($response, true);
     }
@@ -71,7 +81,10 @@ class ZEI_WC_API {
         $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
 
         // URL for object module
-        return self::$URLs[0].'module'.$params;
+        $options = get_option('woocommerce_zei-wc_settings');
+        $mode = "http";
+        if(isset($options['zei_api_https']) && $options['zei_api_https'] == 'yes') $mode .= "s";
+        return self::$URLs[$mode].'module'.$params;
     }
 
     public static function validateOffer($token, $offerId, $amount) {
