@@ -18,10 +18,11 @@ class ZEI_WC_Cart {
 
         // Module
         $options = get_option('woocommerce_zei-wc_settings');
+        // woocommerce_checkout_after_customer_details
         if(!isset($options['zei_module_location']) || $options['zei_module_location'] == 0) {
-            add_action('woocommerce_after_order_notes', array($this, "module"));
+            add_action('woocommerce_checkout_order_review', array($this, "moduleH3"));
         } else if(isset($options['zei_module_location']) && $options['zei_module_location'] == 1) {
-            add_action('woocommerce_after_checkout_billing_form', array($this, "module"));
+            add_action('woocommerce_after_order_notes', array($this, "moduleLabel"));
         } else if(isset($options['zei_module_location']) && $options['zei_module_location'] == 2) {
             add_action('woocommerce_purchase_note_order_statuses', array($this, "moduleValidation"));
         }
@@ -73,9 +74,7 @@ class ZEI_WC_Cart {
         return $valid;
     }
 
-    public function module() {
-        global $woocommerce;
-
+    private function prepareModule($woocommerce, $h3) {
         $token = ZEI_WC_API::getToken();
 
         if($token) {
@@ -91,11 +90,17 @@ class ZEI_WC_Cart {
             }
             if($display) {
                 $url = ZEI_WC_API::getModuleUrl($token, true, true);
-                if($url) echo "<object id=\"ZEI\" width=\"360px\" height=\"60px\" data=\""
-                    .$url."\"></object>";
+                if($url) {
+                    $title = get_locale() == "fr_FR" ? "Vos points de récompense" : "Your rewards points";
+                    echo $h3 ? "<h3>".$title."</h3>" : "<label>".$title."</label>";
+                    echo "<object id=\"ZEI\" width=\"360px\" height=\"60px\" data=\"".$url."\"></object>";
+                }
             }
         }
     }
+
+    public function moduleLabel() { global $woocommerce; $this->prepareModule($woocommerce, false); }
+    public function moduleH3() { global $woocommerce; $this->prepareModule($woocommerce, true); }
 
     private function validateOffer($token, $item) {
         $options = get_option('woocommerce_zei-wc_settings');
@@ -114,7 +119,6 @@ class ZEI_WC_Cart {
                 var checkExist = setInterval(function() {
                     if(typeof module !== 'undefined') {
                         clearInterval(checkExist);
-                        console.log(module);
                         module.addEventListener('load', function() {
                             if(firstLoad) {
                                 firstLoad = false;

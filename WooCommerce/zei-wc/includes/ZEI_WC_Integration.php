@@ -72,8 +72,8 @@ class ZEI_WC_Integration extends WC_Integration {
             'description'       => __('Location where ZEI account module must appear.', 'woocommerce-zei-wc'),
             'desc_tip'          => true,
             'options'           => array(
-                0 => 'On "Additional Information" (recommended)',
-                1 => 'At the end of "Billing Details" (if hidden)',
+                0 => 'After "Order Review" (recommended)',
+                1 => 'On "Additional Information"',
                 //2 => 'On order validation page'
             ),
             'default'           => 0
