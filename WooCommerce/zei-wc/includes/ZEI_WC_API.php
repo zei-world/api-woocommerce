@@ -32,7 +32,8 @@ class ZEI_WC_API {
 
         if(!$tried || !$response) {
             $response = file_get_contents(self::$URLs['http'].$url, false, stream_context_create(array(
-                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header)
+                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header),
+                'ssl' => array("verify_peer" => false, "verify_peer_name" => false)
             )));
         }
 
