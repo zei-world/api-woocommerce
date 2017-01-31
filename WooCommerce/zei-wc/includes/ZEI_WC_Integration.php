@@ -69,7 +69,7 @@ class ZEI_WC_Integration extends WC_Integration {
         $fields['zei_api_https'] = array(
             'title'             => __('Use HTTPS', 'woocommerce-zei-wc'),
             'type'              => 'checkbox',
-            'description'       => __('Use or not secure API requests', 'woocommerce-zei-wc'),
+            'description'       => __('Use or not secure API requests.', 'woocommerce-zei-wc'),
             'default'           => 'yes'
         );
 

@@ -6,7 +6,7 @@ position: 2
 **Vous utilisez WordPress avec l'extension WooCommerce ? Suivez les étapes suivantes !**
 
 1. Installez le plugin sur WordPress
-  * [Téléchargez ce fichier zip](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/latest.zip?raw=true)
+  * [Téléchargez ce fichier zip](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/zei-woocommerce-latest.zip?raw=true)
   et installez-le sur WordPress : "Extensions" > "Ajouter" > "Mettre une extension en ligne"
   * Ou utilisez le lien pour l'installer directement depuis WordPress (**bientôt disponible**)
   * Ou envoyez le dossier "zei-wc" ([depuis le repository](https://github.com/zeroecoimpact/API/tree/master/WooCommerce){:target="_blank"}) dans le dossier "/wp-content/plugins/" de votre installation WordPress (par FTP par exemple)

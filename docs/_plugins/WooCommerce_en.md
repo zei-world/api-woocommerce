@@ -6,7 +6,7 @@ position: 1
 **You use WordPress with WooCommerce plugin ? Follow those steps !**
 
 1. Install the plugin in WordPress
-  * [Dowload this zip archive](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/latest.zip?raw=true)
+  * [Dowload this zip archive](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/zei-woocommerce-latest.zip?raw=true)
   and install it on WordPress : "Plugins" > "Add New" > "Upload Plugin"
   * Or use the link and install it directly from WordPress (**coming soon**)
   * Or upload the "zei-wc" directory
