@@ -6,9 +6,9 @@ position: 2
 **Vous utilisez WordPress avec l'extension WooCommerce ? Suivez les étapes suivantes !**
 
 1. Installez le plugin sur WordPress
-  * [Téléchargez ce fichier zip](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/zei-woocommerce-latest.zip?raw=true)
-  et installez-le sur WordPress : "Extensions" > "Ajouter" > "Mettre une extension en ligne"
-  * Ou utilisez le lien pour l'installer directement depuis WordPress (**bientôt disponible**)
+  * Allez dans "Extensions" > "Ajouter" et cherchez "zei", ensuite cliquez sur "Installer"
+  * Ou [téléchargez le plugin ici](https://wordpress.org/plugins-wp/zero-ecoimpact-woocommerce/) et installez-le sur
+  WordPress : "Extensions" > "Ajouter" > "Mettre une extension en ligne"
   * Ou envoyez le dossier "zei-wc" ([depuis le repository](https://github.com/zeroecoimpact/API/tree/master/WooCommerce){:target="_blank"}) dans le dossier "/wp-content/plugins/" de votre installation WordPress (par FTP par exemple)
 2. Allez dans [Zero ecoimpact](https://zero-ecoimpact.org){:target="_blank"} > votre Profil Public d'entreprise > "Mes outils" > API
 3. ensuite, dans votre panel d'administration WordPress, allez dans "WooCommerce" > "Réglages" > "Intégration" et remplissez avec vos identifiants API ZEI (clé API et API secret)

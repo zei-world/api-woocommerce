@@ -6,9 +6,9 @@ position: 1
 **You use WordPress with WooCommerce plugin ? Follow those steps !**
 
 1. Install the plugin in WordPress
-  * [Dowload this zip archive](https://github.com/zeroecoimpact/API/blob/master/WooCommerce/zei-woocommerce-latest.zip?raw=true)
-  and install it on WordPress : "Plugins" > "Add New" > "Upload Plugin"
-  * Or use the link and install it directly from WordPress (**coming soon**)
+  * Go to "Plugins" > "Add New" and search "zei", then "Install"
+  * Or [dowload the plugin here](https://wordpress.org/plugins-wp/zero-ecoimpact-woocommerce/)
+  and install it : "Plugins" > "Add New" > "Upload Plugin"
   * Or upload the "zei-wc" directory
   ([from the repository](https://github.com/zeroecoimpact/API/tree/master/WooCommerce){:target="_blank"})
   on "/wp-content/plugins/" from your WordPress installation (by FTP for example)
