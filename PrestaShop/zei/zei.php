@@ -1,7 +1,9 @@
 <?php
 
 if(!defined('_PS_VERSION_')) exit;
- 
+
+include "zei_api.php";
+
 class ZEI extends Module {
 
     public function __construct() {
@@ -10,7 +12,7 @@ class ZEI extends Module {
         $this->version = '1.0';
         $this->author = 'Nazim from ZEI';
         $this->need_instance = 0;
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION);
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
 
         parent::__construct();
@@ -24,13 +26,58 @@ class ZEI extends Module {
     }
 
     public function install() {
-        if(!parent::install()) return false;
-        return true;
+        return 
+            parent::install() &&
+            $this->alterTable() &&
+            $this->registerHook('displayAdminProductsExtra')
+        ;
     }
 
     public function uninstall() {
-        if(!parent::uninstall()) return false;
-        return true;
+        return 
+            parent::uninstall() &&
+            $this->alterTable(true)
+        ;
+    }
+
+    public function alterTable($remove = false) {
+        if($remove) {
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN IF EXISTS `zei_offer`';
+        } else {
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD IF NOT EXISTS `zei_offer` int NOT NULL';
+        }
+        return Db::getInstance()->Execute($sql);
+    }
+
+    public function hookDisplayAdminProductsExtra($params) {
+        $errors = "";
+
+        if(!($key = Configuration::get('zei_api_key'))) {
+            $errors .= "Your Zero ecoimpact API key is not set...".PHP_EOL;
+        }
+
+        if(!($secret = Configuration::get('zei_api_secret'))) {
+            $errors .= "Your Zero ecoimpact API secret is not set...".PHP_EOL;
+        }
+
+        if(!$errors) {
+            if(Configuration::get('zei_global_offer')) {
+                return "You set a global offer !";
+            } else if(($id = (int)Tools::getValue('id_product')) || ($id = (int)$params['request']->attributes->get('id'))) {
+                $product = new Product($id);
+                if($product && isset($product->id)) {
+                    $token = zei_api::getToken($key, $secret);
+                    $list = zei_api::getOffersList($token);
+                    $this->context->smarty->assign(array(
+                        'zei_offer_list' => $list,
+                        'zei_offer_product' => $product->zei_offer
+                    ));
+                    return $this->display(__FILE__, 'views/field.tpl');
+                }
+            }
+        }
+
+        return $errors;
     }
 
     public function getContent() {
@@ -39,19 +86,18 @@ class ZEI extends Module {
             $error = false;
 
             $key = strval(Tools::getValue('zei_api_key'));
-            $secret = strval(Tools::getValue('zei_api_secret'));
-            $https = strval(Tools::getValue('zei_api_https'));
-
             if(!$key || empty($key) || 32 !== strlen($key) || !Validate::isGenericName($key)) {
                 $output .= $this->displayError($this->l('Invalid API key'));
                 $error = true;
             }
 
+            $secret = strval(Tools::getValue('zei_api_secret'));
             if(!$error && (!$secret || empty($secret) || 45 !== strlen($secret) || !Validate::isGenericName($secret))) {
                 $output .= $this->displayError($this->l('Invalid API secret'));
                 $error = true;
             }
 
+            $https = strval(Tools::getValue('zei_api_https'));
             if(!$error && ($https != 0 || $https != 1) && !Validate::isGenericName($https)) {
                 $output .= $this->displayError($this->l('Invalid HTTPS option'));
                 $error = true;
@@ -59,9 +105,12 @@ class ZEI extends Module {
 
             if(!$error) {
                 $output .= $this->displayConfirmation($this->l('Settings updated'));
+
                 Configuration::updateValue('zei_api_key', $key);
                 Configuration::updateValue('zei_api_secret', $secret);
                 Configuration::updateValue('zei_api_https', $https);
+
+                Configuration::updateValue('zei_global_offer', Tools::getValue('zei_global_offer'));
             }
         }
         return $output.$this->displayForm();
@@ -123,19 +172,7 @@ class ZEI extends Module {
                             'label' => $this->l('Disabled')
                         )
                     )
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Global offer'),
-                    'desc' => $this->l('Use a ZEI offer for the whole store.'),
-                    'name' => 'zei_global_offer',
-                    'required' => false,
-                    'options' => array(
-                        'query' => ['', 'Example'],
-                        'id' => 'id_option',
-                        'name' => 'name'
-                    )
-                ),
+                )
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
@@ -143,8 +180,37 @@ class ZEI extends Module {
             )
         );
 
-        $helper->fields_value['zei_api_key'] = Configuration::get('zei_api_key');
-        $helper->fields_value['zei_api_secret'] = Configuration::get('zei_api_secret');
+        $key = $helper->fields_value['zei_api_key'] = Configuration::get('zei_api_key');
+        $secret = $helper->fields_value['zei_api_secret'] = Configuration::get('zei_api_secret');
+
+        if($key && $secret) {
+            $token = zei_api::getToken($key, $secret);
+            if($token) {
+                $offers = zei_api::getOffersList($token);
+                if($offers) {
+                    $query = array(array('key' => 0, 'name' => ''));
+                    foreach($offers as $key => $name) {
+                        array_push($query, array('key' => $key, 'name' => $name));
+                    }
+
+                    array_push($form[0]['form']['input'], array(
+                        'type' => 'select',
+                        'label' => $this->l('Global offer'),
+                        'desc' => $this->l('Use a ZEI offer for the whole store.'),
+                        'name' => 'zei_global_offer',
+                        'required' => false,
+                        'options' => array(
+                            'query' => $query,
+                            'id' => 'key',
+                            'name' => 'name'
+                        )
+                    ));
+
+                    $global = Configuration::get('zei_global_offer');
+                    $helper->fields_value['zei_global_offer'] = $global ? $global : 0;
+                }
+            }
+        }
 
         $https = Configuration::get('zei_api_https');
         $helper->fields_value['zei_api_https'] = ($https == 0 || $https == 1) ? $https : 1;
