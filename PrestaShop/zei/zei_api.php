@@ -49,4 +49,15 @@ class zei_api {
         return null;
     }
 
+    public static function getModuleUrl($token, $b2b, $b2c) {
+        $params = '?token='.$token;
+
+        // Is B2B or/and B2C
+        $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
+
+        // URL for object module
+        $mode = "http".(Configuration::get('zei_api_https') ? "s" : "");
+        return self::$URLs[$mode].'module'.$params;
+    }
+
 }

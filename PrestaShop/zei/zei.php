@@ -29,7 +29,9 @@ class ZEI extends Module {
         return 
             parent::install() &&
             $this->alterTable() &&
-            $this->registerHook('displayAdminProductsExtra')
+            $this->registerHook('displayAdminProductsExtra') &&
+            $this->registerHook('displayPaymentTop') &&
+            $this->registerHook('displayOrderConfirmation')
         ;
     }
 
@@ -38,46 +40,6 @@ class ZEI extends Module {
             parent::uninstall() &&
             $this->alterTable(true)
         ;
-    }
-
-    public function alterTable($remove = false) {
-        if($remove) {
-            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN IF EXISTS `zei_offer`';
-        } else {
-            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD IF NOT EXISTS `zei_offer` int NOT NULL';
-        }
-        return Db::getInstance()->Execute($sql);
-    }
-
-    public function hookDisplayAdminProductsExtra($params) {
-        $errors = "";
-
-        if(!($key = Configuration::get('zei_api_key'))) {
-            $errors .= "Your Zero ecoimpact API key is not set...".PHP_EOL;
-        }
-
-        if(!($secret = Configuration::get('zei_api_secret'))) {
-            $errors .= "Your Zero ecoimpact API secret is not set...".PHP_EOL;
-        }
-
-        if(!$errors) {
-            if(Configuration::get('zei_global_offer')) {
-                return "You set a global offer !";
-            } else if(($id = (int)Tools::getValue('id_product')) || ($id = (int)$params['request']->attributes->get('id'))) {
-                $product = new Product($id);
-                if($product && isset($product->id)) {
-                    $token = zei_api::getToken($key, $secret);
-                    $list = zei_api::getOffersList($token);
-                    $this->context->smarty->assign(array(
-                        'zei_offer_list' => $list,
-                        'zei_offer_product' => $product->zei_offer
-                    ));
-                    return $this->display(__FILE__, 'views/field.tpl');
-                }
-            }
-        }
-
-        return $errors;
     }
 
     public function getContent() {
@@ -229,6 +191,82 @@ class ZEI extends Module {
         );
 
         return $helper->generateForm($form);
+    }
+
+    public function alterTable($remove = false) {
+        if($remove) {
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN IF EXISTS `zei_offer`; ';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders DROP COLUMN IF EXISTS `zei_token`; ';
+        } else {
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD IF NOT EXISTS `zei_offer` int NOT NULL; ';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD IF NOT EXISTS `zei_token` text NOT NULL; ';
+        }
+        return Db::getInstance()->Execute($sql);
+    }
+
+    public function hookDisplayAdminProductsExtra($params) {
+        $errors = "";
+
+        if(!($key = Configuration::get('zei_api_key'))) {
+            $errors .= "Your Zero ecoimpact API key is not set...".PHP_EOL;
+        }
+
+        if(!($secret = Configuration::get('zei_api_secret'))) {
+            $errors .= "Your Zero ecoimpact API secret is not set...".PHP_EOL;
+        }
+
+        if(!$errors) {
+            if(Configuration::get('zei_global_offer')) {
+                return "You set a global offer !";
+            } else if(
+                ($id = (int)Tools::getValue('id_product')) ||
+                ($id = (int)$params['request']->attributes->get('id'))
+            ) {
+                $product = new Product($id);
+                if($product && isset($product->id)) {
+                    $token = zei_api::getToken($key, $secret);
+                    $list = zei_api::getOffersList($token);
+                    $this->context->smarty->assign(array(
+                        'zei_offer_list' => $list,
+                        'zei_offer_product' => $product->zei_offer
+                    ));
+                    return $this->display(__FILE__, 'views/field.tpl');
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    public function hookDisplayPaymentTop($params) {
+        if(
+            ($cart = $params['cart']) &&
+            ($key = Configuration::get('zei_api_key')) &&
+            ($secret = Configuration::get('zei_api_secret')) &&
+            ($token = zei_api::getToken($key, $secret))
+
+        ) {
+            foreach($params['cart']->getProducts() as $cartProduct) {
+                if(($id = $cartProduct['id_product']) && ($product = new Product($id)) && $product->zei_offer) {
+                    $cookie = new Cookie('zei');
+                    $cookie->setExpire(time() + 20 * 60);
+                    $cookie->token = $token;
+                    $cookie->write();
+                    $this->context->smarty->assign(array('zei_token' => zei_api::getModuleUrl($token, true, true)));
+                    return $this->display(__FILE__, 'views/module.tpl');
+                }
+            }
+        }
+        return null;
+    }
+
+    public function hookDisplayOrderConfirmation($params) {
+        $cookie = new Cookie('zei');
+        if($cookie && $cookie->token && ($order = $params['order'])) {
+            $order->zei_token = $cookie->token;
+            $order->save();
+            $cookie->logout();
+        }
     }
 
 }
