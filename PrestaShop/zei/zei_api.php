@@ -60,4 +60,11 @@ class zei_api {
         return self::$URLs[$mode].'module'.$params;
     }
 
+    public static function validateOffer($token, $offerId, $amount = 1) {
+        return self::request('company/offer', [
+            'token' => $token,
+            'offer' => $offerId,
+            'amount' => $amount
+        ]);
+    }
 }

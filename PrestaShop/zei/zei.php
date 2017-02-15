@@ -31,7 +31,8 @@ class ZEI extends Module {
             $this->alterTable() &&
             $this->registerHook('displayAdminProductsExtra') &&
             $this->registerHook('displayPaymentTop') &&
-            $this->registerHook('displayOrderConfirmation')
+            $this->registerHook('displayOrderConfirmation') &&
+            $this->registerHook('actionPaymentConfirmation')
         ;
     }
 
@@ -266,6 +267,19 @@ class ZEI extends Module {
             $order->zei_token = $cookie->token;
             $order->save();
             $cookie->logout();
+        }
+    }
+
+    public function hookActionPaymentConfirmation($params) {
+        if(($order = new Order($params['id_order'])) && $order->zei_token) {
+            $globalOffer = Configuration::get('zei_global_offer');
+            foreach($params['cart']->getProducts() as $cartProduct) {
+                if(($product = new Product($cartProduct['id_product'])) && $product->zei_offer) {
+                    // TODO : Gérer la validation de plusieurs offres
+                    zei_api::validateOffer($order->zei_token, ($globalOffer ? $globalOffer : $product->zei_offer));
+                    break;
+                }
+            }
         }
     }
 
