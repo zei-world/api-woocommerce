@@ -176,7 +176,7 @@ class ZEI {
         if(!$amount) $amount = 1;
         $request = $this->request('company/reward', [
             'token' => $this->token,
-            'offer' => $rewardId,
+            'reward' => $rewardId,
             'amount' => $amount,
             'locale' => $this->locale
         ]);
