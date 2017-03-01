@@ -31,11 +31,9 @@ confirm
 
 **Logique (FR)** :
 
-- Vérifie les valeurs des headers envoyés et si l'IP cliente est présente
-- Vérifie la validité du token
+- Vérifie les valeurs des params envoyés et si l'IP cliente est présente
 - Compare l'IP du client à celle du DNS des domaines enregistrés
 - Vérifie la validité de la récompense (non supprimée, activée, contrat signé et avec la catégorie "En ligne")
 - Vérifie si la récompense peut s'appliquer à un utilisateur, une entreprise ou une association (B2B / B2C)
 - Valide la récompense pour l'utilisateur, l'entreprise ou l'association
 - Consomme le code correspondant pour indiquer qu'il a été utilisé
-- Supprime le token

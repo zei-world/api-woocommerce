@@ -15,6 +15,7 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 
 ```html
 <?php require_once('ZEI.php'); ?>
+
 <object id="ZEI" style="width:320px;height:128px" data="<?=ZEI::getModuleUrl(true, true)?>"></object>
 <!--
     getModuleUrl() or getModuleUrl(true, true) will display all profiles (for B2C and B2B)
@@ -41,7 +42,8 @@ The module size could not be changed
     // (1) Includes the main API class
     require_once('ZEI.php');
     
-    // (2A) Validate an offer with its id (here 42) and the quantity of products purchased (here 4, default is 1)
+    // (2A) Validate an offer with its id (here 42)
+    //     and the quantity of products purchased (here 4, default is 1)
     ZEI::validateOffer(42, 4);
     
     // (2B1) Check a reward code
