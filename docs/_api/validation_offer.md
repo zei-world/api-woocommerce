@@ -2,7 +2,7 @@
 title: /v2/validation/offer/{offerId}/{profileId}
 position: 2.1
 type: get
-description: Validate an offer
+description: Validate an offer {offerId} for {profileId}
 right_code: |
   ~~~ json
     {

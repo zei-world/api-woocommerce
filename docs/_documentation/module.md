@@ -8,15 +8,19 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 
 1. [Download](https://raw.githubusercontent.com/zeroecoimpact/API/master/PHP/ZEI.php) and put ZEI.php on source files
 2. Include it in your back-end pages and use the class (see examples)
-4. Once the user module is deployed, you must keep the token in your navigation logic (use GET, POST or PHP sessions)
-5. When the user reaches the end of the process of the offer or the reward, validate them with the right class method
+3. When the user reaches the end of the process of the offer or the reward, validate it with the right class method
 
 **Example to display the user module (and generate his token) :**
 
 ```html
 <?php require_once('ZEI.php'); ?>
 
-<object id="ZEI" style="width:320px;height:128px" data="<?=ZEI::getModuleUrl(true, true)?>"></object>
+<object
+    id="ZEI"
+    style="width:320px;height:128px"
+    data="<?=ZEI::getModuleUrl(true, true)?>">
+</object>
+
 <!--
     getModuleUrl() or getModuleUrl(true, true) will display all profiles (for B2C and B2B)
     getModuleUrl(false) or getModuleUrl(false, true) will only display profiles for B2B
@@ -43,7 +47,7 @@ The module size could not be changed
     require_once('ZEI.php');
     
     // (2A) Validate an offer with its id (here 42)
-    //     and the quantity of products purchased (here 4, default is 1)
+    //      and the quantity of products purchased (here 4, default is 1)
     ZEI::validateOffer(42, 4);
     
     // (2B1) Check a reward code

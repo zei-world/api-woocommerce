@@ -2,7 +2,7 @@
 title: /v2/validation/reward/{code}
 position: 3.1
 type: get
-description: Check and validate a reward code
+description: Check and validate a reward code {code}
 right_code: |
   ~~~ json
     {
