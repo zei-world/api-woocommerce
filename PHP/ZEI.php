@@ -20,13 +20,13 @@ class ZEI {
      * Your Zero ecoimpact API id key
      * @var string
      */
-    private $id = "";
+    static private $id = "";
 
     /**
      * Your Zero ecoimpact API secret key
      * @var string
      */
-    private $secret = "";
+    static private $secret = "";
 
     /**
      * Change this value to see errors when they appends
