@@ -1,5 +1,5 @@
 ---
-title: /validation/offer/{offerId}/{profileId}
+title: /v2/validation/offer/{offerId}/{profileId}
 position: 2.1
 type: get
 description: Validate an offer

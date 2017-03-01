@@ -1,5 +1,5 @@
 ---
-title: /validation/reward/{code}
+title: /v2/validation/reward/{code}
 position: 3.1
 type: get
 description: Check and validate a reward code

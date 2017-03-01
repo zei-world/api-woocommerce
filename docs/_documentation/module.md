@@ -14,14 +14,13 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 **Example to display the user module (and generate his token) :**
 
 ```html
-<?php
-    require_once('ZEI.php'); // (1) Includes the main API class
-    $zei = new ZEI(); // (2) Creates main instance, must be UNIQUE
-    $_SESSION['zeiToken'] = $zei->requestToken(); // (3) Token request
-?>
-
-<!-- (4) Display the HTML user module (params : isB2B, isB2C, redirect_uri/callback) -->
-<object id="ZEI" style="width:320px;height:128px" data="<?=$zei->getModuleUrl(true, true)?>"></object>
+<?php require_once('ZEI.php'); ?>
+<object id="ZEI" style="width:320px;height:128px" data="<?=ZEI::getModuleUrl(true, true)?>"></object>
+<!--
+    getModuleUrl() or getModuleUrl(true, true) will display all profiles (for B2C and B2B)
+    getModuleUrl(false) or getModuleUrl(false, true) will only display profiles for B2B
+    getModuleUrl(true, false) will only display profiles for B2C
+-->
 ```
 
 The module size could not be changed
@@ -41,15 +40,14 @@ The module size could not be changed
 <?php
     // (1) Includes the main API class
     require_once('ZEI.php');
-    // (2) Creates main instance, must be UNIQUE
-    $zei = new ZEI();
-    // (3) Retreaves the token
-    $zei->setToken($_SESSION['zeiToken']);
     
-    // (4A) Validate an offer with its id (here 0) and the quantity of products purchased
-    $zei->validateOffer(0, 1);
+    // (2A) Validate an offer with its id (here 42) and the quantity of products purchased (here 4, default is 1)
+    ZEI::validateOffer(42, 4);
     
-    // (4B) Validate a reward with its id (here 0) and the amount of products purchased
-    $zei->validateReward(0, 1);
+    // (2B1) Check a reward code
+    ZEI::checkReward("EXAMPLE_CODE");
+    
+    // (2B2) Validate a reward code
+    ZEI::validateReward("EXAMPLE_CODE");
 ?>
 ```
