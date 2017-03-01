@@ -1,5 +1,5 @@
 ---
-title: /company/offers
+title: /v2/company/offers
 position: 2.0
 type: get
 description: Get your offers list
@@ -17,13 +17,16 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[OFFERS] ..."
+    "message": "[COMPANY OFFERS] ..."
   }
   ~~~
   {: title="Error" }
 ---
-token
-: Generated valid token
+id
+: Your ZEI API id
+
+secret 
+: Your ZEI API secret
 
 **Logique (FR)** :
 

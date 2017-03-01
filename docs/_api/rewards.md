@@ -1,5 +1,5 @@
 ---
-title: /company/rewards
+title: /v2/company/rewards
 position: 3.0
 type: get
 description: Get your rewards list
@@ -17,13 +17,16 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[REWARDS] ..."
+    "message": "[COMPANY REWARDS] ..."
   }
   ~~~
   {: title="Error" }
 ---
-token
-: Generated valid token
+id
+: Your ZEI API id
+
+secret 
+: Your ZEI API secret
 
 **Logique (FR)** :
 

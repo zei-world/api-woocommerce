@@ -1,5 +1,5 @@
 ---
-title: /company/offer
+title: /validation/offer/{offerId}/{profileId}
 position: 2.1
 type: get
 description: Validate an offer
@@ -15,13 +15,16 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[OFFER] ..."
+    "message": "[OFFER VALIDATION] ..."
   }
   ~~~
   {: title="Error" }
 ---
-token
-: Generated valid token
+id
+: Your ZEI API id
+
+secret 
+: Your ZEI API secret
 
 offer
 : Your Company offer id

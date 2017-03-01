@@ -1,8 +1,8 @@
 ---
-title: /company/reward
-position: 3.2
+title: /validation/reward/{code}
+position: 3.1
 type: get
-description: Validate a reward
+description: Check and validate a reward code
 right_code: |
   ~~~ json
     {
@@ -15,19 +15,19 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[REWARD] ..."
+    "message": "[REWARD VALIDATION] ..."
   }
   ~~~
   {: title="Error" }
 ---
-token
-: Generated valid token
+id
+: Your ZEI API id
 
-reward
-: Your Company reward id
+secret 
+: Your ZEI API secret
 
-amount
-: Amount paid with reward (default : 0) [OPTIONAL]
+confirm
+: Check the code (1) or validate (0) (default : 1) [OPTIONAL]
 
 **Logique (FR)** :
 
