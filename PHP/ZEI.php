@@ -7,7 +7,7 @@
  *  @   @  @       @    @        d8' db 88.       .88.        88   88 88        .88.
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
- *    @   @ @ @ @ @   @             Version 1.2 - PHP Edition
+ *    @   @ @ @ @ @   @             Version 2.0 - PHP Edition
  *     @             @              Zero ecoimpact (https://zero-ecoimpact.org)
  *      @ @ @ @ @ @ @               Nazim from ZEI (nazim.lachter@zero-ecoimpact.org)
  */
@@ -29,95 +29,36 @@ class ZEI {
     private $secret = "";
 
     /**
-     * Use Javascript and open a window for logging (/!\ your POST data will be lost)
-     * @var bool
-     */
-    private $window = true;
-
-    /**
-     * Default displayed language ("fr" or "en"), can be changed in constructor if changes
-     * @var null|string
-     */
-    private $locale = "fr";
-
-    /**
-     * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
-     * Default timeout is set to 2 seconds
-     * @var int
-     */
-    private $timeout = 2;
-
-    //
-    /**
      * Change this value to see errors when they appends
      * @var bool
      */
-    private $debug = false;
+    static private $debug = true;
 
     /* ==============================================================================================================
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
      * ============================================================================================================== */
 
-    /**
-     * @var string
-     */
-    private $api = "https://zero-ecoimpact.org/api/";
+    static private $api = "https://zero-ecoimpact.org/api/v2/";
 
-    /**
-     * @var null
-     */
-    private $token = null;
-
-    /**
-     * @var string
-     */
-    private $error = "";
-
-    /**
-     * Constructor
-     * @param null $locale
-     */
-    function __construct($locale = null) {
-        if($locale) $this->locale = $locale;
-    }
-
-    private function request($path, $headers) {
-        $header = "";
-        foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
-        $response = file_get_contents($this->api.$path, false, stream_context_create([
-            'http' => [ 'method' => "GET", 'timeout' => $this->timeout, 'header' => $header ],
-            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
-        ]));
-        if(!$response) {
-            $this->setError('Server not reached, error during initial request (Zero ecoimpact server\'s down ?)');
-            return false;
+    static private function request($path, $params = array()) {
+        $request = new HttpRequest();
+        $request->setUrl(self::$api.$path);
+        $request->setMethod(HTTP_METH_GET);
+        $request->setQueryData(array_merge(array('id' => self::$id, 'secret' => self::$secret), $params));
+        try {
+            $response = $request->send()->getBody();
+            if($response['success']) return $response;
+            if(self::$debug) var_dump('[ZEI] Server reached with an error : "'.$response['message'].'"');
+        } catch(HttpException $e) {
+            if(self::$debug) var_dump('[ZEI] Server not reached : "'.$e.'"');
         }
-        $output = json_decode($response, true);
-        if($output['success']) return $output;
-        if(isset($output['message'])) $this->setError('Server reached with an error : "'.$output['message'].'"');
-        return false;
-    }
-
-    /**
-     * Request a token with a PHP GET procedure
-     * requestToken()
-     * @return string token or null
-     */
-    function requestToken() {
-        $request = $this->request('token', [
-            'id' => $this->id,
-            'secret' => $this->secret
-        ]);
-
-        if($request && isset($request['token'])) {
-            $this->token = $request['token'];
-            return $request['token'];
-        } else {
-            $this->setError('Token missing into the request');
-        }
-
-        if($this->error && $this->debug) var_dump($this->error);
         return null;
+    }
+
+    static private function validateEntityString($entity) {
+        $test = preg_match("/^(u|c|o)\/[0-9]+$/", $entity);
+        if(!$test && self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
+        return $test;
     }
 
     /**
@@ -128,24 +69,16 @@ class ZEI {
      * @param null $callback
      * @return string
      */
-    function getModuleUrl($b2b = true, $b2c = true, $callback = null) {
-        if($this->error) return '';
-        // Set id
-        $params = '?token='.$this->token;
-
-        // Is B2B or/and B2C
-        $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
-
-        // Set callback
-        if($callback === null && !$this->window) {
+    static function getModuleUrl($b2c = true, $b2b = true, $callback = null) {
+        if(!$b2b && !$b2c) return null;
+        $params = '&b2c=' . ($b2c ? 1 : 0) . '&b2b=' . ($b2b ? 1 : 0);
+        if($callback) {
             $params .= '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
                     || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
                     && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
                     ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
         }
-
-        // URL for object module
-        return $this->api.'module'.$params;
+        return self::$api.'module'.$params;
     }
 
     /**
@@ -154,58 +87,37 @@ class ZEI {
      * @param $amount
      * @return bool
      */
-    function validateOffer($offerId, $amount = null) {
-        if(!$amount) $amount = 1;
-        $request = $this->request('company/offer', [
-            'token' => $this->token,
-            'offer' => $offerId,
-            'amount' => $amount,
-            'locale' => $this->locale
-        ]);
-        if($this->error && $this->debug) var_dump($this->error);
-        return $request;
+    static function validateOffer($offerId, $entity, $amount = 1) {
+        if(self::validateEntityString($entity)) {
+            $response = self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+            if(self::$debug) var_dump($response);
+            return $response['success'];
+        }
+        return false;
+    }
+
+    static private function rewardRequest($code, $confirm = 0) {
+        $response = self::request('validation/reward/'.$code, array('confirm' => $confirm));
+        if(self::$debug) var_dump($response);
+        return $response['success'];
+    }
+
+    /**
+     * Check a reward code with a PHP GET procedure
+     * @param $code
+     * @return bool
+     */
+    static function checkReward($code) {
+        return self::rewardRequest($code);
     }
 
     /**
      * Validate a reward with a PHP GET procedure
-     * @param $rewardId
-     * @param $amount
+     * @param $code
      * @return bool
      */
-    function validateReward($rewardId, $amount = null) {
-        if(!$amount) $amount = 1;
-        $request = $this->request('company/reward', [
-            'token' => $this->token,
-            'reward' => $rewardId,
-            'amount' => $amount,
-            'locale' => $this->locale
-        ]);
-        if($this->error && $this->debug) var_dump($this->error);
-        return $request;
-    }
-
-
-    /**
-     * Set the error var only if you enabled debug
-     * @param $message
-     */
-    private function setError($message) {
-        if($this->debug) $this->error = $message;
-    }
-
-    /**
-     * Set token
-     * @param $token
-     */
-    function setToken($token) {
-        $this->token = $token;
-    }
-
-    /**
-     * Get token
-     */
-    function getToken() {
-        return $this->token;
+    static function validateReward($code) {
+        return self::rewardRequest($code, 1);
     }
 }
 
