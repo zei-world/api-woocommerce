@@ -2,7 +2,7 @@
 title: /v2/validation/reward/{code}
 position: 3.1
 type: get
-description: Check and validate a reward code {code}
+description: Check if a reward code {code} is valid and validate it
 right_code: |
   ~~~ json
     {
@@ -27,7 +27,7 @@ secret
 : Your ZEI API secret
 
 confirm
-: Check the code (1) or validate (0) (default : 1) [OPTIONAL]
+: Only check the code (0) or validate (1) (default : 1) [OPTIONAL]
 
 **Logique (FR)** :
 

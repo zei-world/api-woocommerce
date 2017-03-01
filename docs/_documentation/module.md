@@ -18,8 +18,8 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 <object
     id="ZEI"
     style="width:320px;height:128px"
-    data="<?=ZEI::getModuleUrl(true, true)?>">
-</object>
+    data="<?=ZEI::getModuleUrl()?>"
+></object>
 
 <!--
     getModuleUrl() or getModuleUrl(true, true) will display all profiles (for B2C and B2B)
@@ -28,7 +28,7 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 -->
 ```
 
-The module size could not be changed
+The module size could NOT be changed
 {: .info }
 
 **It will gives you that (if you are connected and not connected on ZEI):**
