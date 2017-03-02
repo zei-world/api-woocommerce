@@ -27,12 +27,18 @@ class ZEI {
      * @var string
      */
     static private $secret = "";
+    /**
+     * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
+     * Default timeout is set to 2 seconds
+     * @var int
+     */
+    static private $timeout = 2;
 
     /**
      * Change this value to see errors when they appends
      * @var bool
      */
-    static private $debug = true;
+    static private $debug = false;
 
     /* ==============================================================================================================
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
@@ -41,44 +47,43 @@ class ZEI {
     static private $api = "https://zero-ecoimpact.org/api/v2/";
 
     static private function request($path, $params = array()) {
-        $request = new HttpRequest();
-        $request->setUrl(self::$api.$path);
-        $request->setMethod(HTTP_METH_GET);
-        $request->setQueryData(array_merge(array('id' => self::$id, 'secret' => self::$secret), $params));
-        try {
-            $response = $request->send()->getBody();
-            if($response['success']) return $response;
-            if(self::$debug) var_dump('[ZEI] Server reached with an error : "'.$response['message'].'"');
-        } catch(HttpException $e) {
-            if(self::$debug) var_dump('[ZEI] Server not reached : "'.$e.'"');
-        }
-        return null;
-    }
+        $url = self::$api.$path."?id=".self::$id."&secret=".self::$secret;
+        foreach($params as $param => $value) $url .= "&".$param."=".$value;
 
-    static private function validateEntityString($entity) {
-        $test = preg_match("/^(u|c|o)\/[0-9]+$/", $entity);
-        if(!$test && self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
-        return $test;
+        $response = file_get_contents($url, false, stream_context_create([
+            'http' => [ 'method' => "GET", 'timeout' => self::$timeout, 'ignore_errors' => true ],
+            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
+        ]));
+
+        if($response) {
+            $data = json_decode($response, true);
+            if(isset($data['success']) && $data['success']) return true;
+            if(self::$debug) var_dump('[ZEI] Server reached with an error', $data);
+        } else if(self::$debug) {
+            var_dump('[ZEI] Server not reached...');
+        }
+
+        return false;
     }
 
     /**
-     * Returns HTML content for an object (on embed) HTML tag
-     * Callback is automatically set with the right scheme (HTTP or HTTPS)
+     * Returns JS content for the object (on embed) HTML tag with ZEI id
      * @param bool $b2b
      * @param bool $b2c
      * @param null $callback
      * @return string
      */
-    static function getModuleUrl($b2c = true, $b2b = true, $callback = null) {
+    static function getScriptUrl($b2c = true, $b2b = true) {
         if(!$b2b && !$b2c) return null;
-        $params = '&b2c=' . ($b2c ? 1 : 0) . '&b2b=' . ($b2b ? 1 : 0);
-        if($callback) {
-            $params .= '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
-                    || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
-                    && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
-                    ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-        }
-        return self::$api.'module'.$params;
+        return self::$api.'script'.
+            '?id=' . self::$id .
+            '&b2c=' . ($b2c ? 1 : 0).
+            '&b2b=' . ($b2b ? 1 : 0).
+            '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+                || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+                && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+                ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
+        ;
     }
 
     /**
@@ -88,18 +93,15 @@ class ZEI {
      * @return bool
      */
     static function validateOffer($offerId, $entity, $amount = 1) {
-        if(self::validateEntityString($entity)) {
-            $response = self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
-            if(self::$debug) var_dump($response);
-            return $response['success'];
+        if(preg_match("/^(u|c|o)\/[0-9]+$/", $entity)) {
+            return self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
         }
+        if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
         return false;
     }
 
     static private function rewardRequest($code, $confirm = 0) {
-        $response = self::request('validation/reward/'.$code, array('confirm' => $confirm));
-        if(self::$debug) var_dump($response);
-        return $response['success'];
+        return self::request('validation/reward/'.$code, array('confirm' => $confirm));
     }
 
     /**

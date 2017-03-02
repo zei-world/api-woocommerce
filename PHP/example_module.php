@@ -4,23 +4,17 @@
 <html>
     <head>
         <title>ZEI API - Full PHP example</title>
-        <style>
-            #ZEI {
-                /* Ratio : 4.(1/3) */
-                width: 360px;
-                height: 60px;
-            }
-            /* DEMO */
-            body { margin: 60px; line-height: 20px; }
-        </style>
     </head>
-    <body>
+    <body style="margin: 60px; line-height: 20px;">
         <h1>Zero ecoimpact API - PHP - User module</h1>
-        <object id="ZEI" data="<?=ZEI::getModuleUrl()?>"></object>
+
+        <object id="ZEI"></object>
+
+        <script type="text/javascript" src="<?=ZEI::getScriptUrl()?>" async="true"></script>
         <!--
-            getModuleUrl() or getModuleUrl(true, true) will display all profiles (for B2C and B2B)
-            getModuleUrl(false) or getModuleUrl(false, true) will only display profiles for B2B
-            getModuleUrl(true, false) will only display profiles for B2C
+            getScriptUrl() or getScriptUrl(true, true) will display all profiles (for B2C and B2B)
+            getScriptUrl(false) or getScriptUrl(false, true) will only display profiles for B2B
+            getScriptUrl(true, false) will only display profiles for B2C
         -->
     </body>
 </html>

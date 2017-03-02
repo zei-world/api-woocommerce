@@ -9,10 +9,16 @@
     <h1>Zero ecoimpact API - PHP - Offers</h1>
 
     <?php
-        if(ZEI::validateOffer(24, 2)) {
-            echo "Validation of offer 24 with 2 units successful :)";
+        $profile = $_COOKIE["zei"]; // The current user profile is stored in a cookie named "zei"
+
+        if($profile) {
+            if(ZEI::validateOffer(24, $profile, 2)) {
+                echo "Validation of offer 24 with 2 units successful :)";
+            } else {
+                echo "Validation failed :(";
+            }
         } else {
-            echo "Validation failed :(";
+            echo "No ZEI profile yet selected !";
         }
     ?>
 </body>

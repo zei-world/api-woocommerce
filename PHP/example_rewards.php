@@ -1,5 +1,7 @@
 <?php
     require_once('ZEI.php');
+
+    $code = "EXAMPLE_CODE";
 ?>
 <html>
 <head>
@@ -10,7 +12,7 @@
 
     <h2>Part 1 : Check if a code is valid</h2>
     <?php
-        if(ZEI::checkReward('EXAMPLE_CODE')) {
+        if(ZEI::checkReward($code)) {
             echo "Code is valid";
         } else {
             echo "Code is invalid (or server error)";
@@ -19,7 +21,7 @@
 
     <h2>Part 2 : Validate the reward code</h2>
     <?php
-    if(ZEI::validateReward('EXAMPLE_CODE')) {
+    if(ZEI::validateReward($code)) {
         echo "Reward validated :)";
     } else {
         echo "Validation failed :(";
