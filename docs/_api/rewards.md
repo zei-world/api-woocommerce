@@ -1,5 +1,5 @@
 ---
-title: /v2/company/rewards
+title: /v2/company/{id}/rewards
 position: 3.0
 type: get
 description: Get your rewards list

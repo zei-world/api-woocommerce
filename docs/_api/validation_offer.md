@@ -26,9 +26,6 @@ id
 secret 
 : Your ZEI API secret
 
-offer
-: Your Company offer id
-
 amount
 : Applied quantity (default : 1) [OPTIONAL]
 
