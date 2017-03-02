@@ -1,5 +1,5 @@
 ---
-title: /v2/company/{id}/offers
+title: /v2/company/offers
 position: 2.0
 type: get
 description: Get your offers list
