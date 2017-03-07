@@ -2,8 +2,8 @@
 <module>
     <name>zei</name>
     <displayName><![CDATA[Zero ecoimpact]]></displayName>
-    <version><![CDATA[1.0]]></version>
-    <description><![CDATA[Link your company offers and rewards from Zero ecoimpact !]]></description>
+    <version><![CDATA[1.1]]></version>
+    <description><![CDATA[Link your company offers from Zero ecoimpact !]]></description>
     <author><![CDATA[Nazim from ZEI]]></author>
     <tab><![CDATA[zei_api]]></tab>
     <confirmUninstall><![CDATA[Are you sure to remove your link with ZEI ?]]></confirmUninstall>

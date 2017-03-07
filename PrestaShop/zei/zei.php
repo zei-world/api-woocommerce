@@ -9,7 +9,7 @@ class ZEI extends Module {
     public function __construct() {
         $this->name = 'zei';
         $this->tab = 'zei_api';
-        $this->version = '1.0';
+        $this->version = '1.1';
         $this->author = 'Nazim from ZEI';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
@@ -147,31 +147,28 @@ class ZEI extends Module {
         $secret = $helper->fields_value['zei_api_secret'] = Configuration::get('zei_api_secret');
 
         if($key && $secret) {
-            $token = zei_api::getToken($key, $secret);
-            if($token) {
-                $offers = zei_api::getOffersList($token);
-                if($offers) {
-                    $query = array(array('key' => 0, 'name' => ''));
-                    foreach($offers as $key => $name) {
-                        array_push($query, array('key' => $key, 'name' => $name));
-                    }
-
-                    array_push($form[0]['form']['input'], array(
-                        'type' => 'select',
-                        'label' => $this->l('Global offer'),
-                        'desc' => $this->l('Use a ZEI offer for the whole store.'),
-                        'name' => 'zei_global_offer',
-                        'required' => false,
-                        'options' => array(
-                            'query' => $query,
-                            'id' => 'key',
-                            'name' => 'name'
-                        )
-                    ));
-
-                    $global = Configuration::get('zei_global_offer');
-                    $helper->fields_value['zei_global_offer'] = $global ? $global : 0;
+            $offers = zei_api::getOffersList();
+            if($offers) {
+                $query = array(array('key' => 0, 'name' => ''));
+                foreach($offers as $key => $name) {
+                    array_push($query, array('key' => $key, 'name' => $name));
                 }
+
+                array_push($form[0]['form']['input'], array(
+                    'type' => 'select',
+                    'label' => $this->l('Global offer'),
+                    'desc' => $this->l('Use a ZEI offer for the whole store.'),
+                    'name' => 'zei_global_offer',
+                    'required' => false,
+                    'options' => array(
+                        'query' => $query,
+                        'id' => 'key',
+                        'name' => 'name'
+                    )
+                ));
+
+                $global = Configuration::get('zei_global_offer');
+                $helper->fields_value['zei_global_offer'] = $global ? $global : 0;
             }
         }
 
@@ -197,10 +194,10 @@ class ZEI extends Module {
     public function alterTable($remove = false) {
         if($remove) {
             $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN IF EXISTS `zei_offer`; ';
-            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders DROP COLUMN IF EXISTS `zei_token`; ';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders DROP COLUMN IF EXISTS `zei_profile`; ';
         } else {
             $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD IF NOT EXISTS `zei_offer` int NOT NULL; ';
-            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD IF NOT EXISTS `zei_token` text NOT NULL; ';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD IF NOT EXISTS `zei_profile` text NOT NULL; ';
         }
         return Db::getInstance()->Execute($sql);
     }
@@ -218,17 +215,15 @@ class ZEI extends Module {
 
         if(!$errors) {
             if(Configuration::get('zei_global_offer')) {
-                return "You set a global offer !";
+                return "You set a global offer :)";
             } else if(
                 ($id = (int)Tools::getValue('id_product')) ||
                 ($id = (int)$params['request']->attributes->get('id'))
             ) {
                 $product = new Product($id);
                 if($product && isset($product->id)) {
-                    $token = zei_api::getToken($key, $secret);
-                    $list = zei_api::getOffersList($token);
                     $this->context->smarty->assign(array(
-                        'zei_offer_list' => $list,
+                        'zei_offer_list' => zei_api::getOffersList(),
                         'zei_offer_product' => $product->zei_offer
                     ));
                     return $this->display(__FILE__, 'views/field.tpl');
@@ -243,17 +238,11 @@ class ZEI extends Module {
         if(
             ($cart = $params['cart']) &&
             ($key = Configuration::get('zei_api_key')) &&
-            ($secret = Configuration::get('zei_api_secret')) &&
-            ($token = zei_api::getToken($key, $secret))
-
+            ($secret = Configuration::get('zei_api_secret'))
         ) {
             foreach($params['cart']->getProducts() as $cartProduct) {
                 if(($id = $cartProduct['id_product']) && ($product = new Product($id)) && $product->zei_offer) {
-                    $cookie = new Cookie('zei');
-                    $cookie->setExpire(time() + 20 * 60);
-                    $cookie->token = $token;
-                    $cookie->write();
-                    $this->context->smarty->assign(array('zei_token' => zei_api::getModuleUrl($token, true, true)));
+                    $this->context->smarty->assign(array('zei_script' => zei_api::getScriptUrl()));
                     return $this->display(__FILE__, 'views/module.tpl');
                 }
             }
@@ -262,22 +251,26 @@ class ZEI extends Module {
     }
 
     public function hookDisplayOrderConfirmation($params) {
-        $cookie = new Cookie('zei');
-        if($cookie && $cookie->token && ($order = $params['order'])) {
-            $order->zei_token = $cookie->token;
+        $cookie = $_COOKIE["zei"];
+        if($cookie && ($order = $params['order'])) {
+            $order->zei_profile = $cookie;
             $order->save();
-            $cookie->logout();
         }
     }
 
     public function hookActionPaymentConfirmation($params) {
-        if(($order = new Order($params['id_order'])) && $order->zei_token) {
+        if(($order = new Order($params['id_order'])) && $order->zei_profile) {
+
             $globalOffer = Configuration::get('zei_global_offer');
+
+            var_dump($params['cart']);die;
+
             foreach($params['cart']->getProducts() as $cartProduct) {
-                if(($product = new Product($cartProduct['id_product'])) && $product->zei_offer) {
-                    // TODO : Gérer la validation de plusieurs offres
-                    zei_api::validateOffer($order->zei_token, ($globalOffer ? $globalOffer : $product->zei_offer));
-                    break;
+                if(($product = new Product($cartProduct['id_product']))) {
+                    $offerId = $globalOffer ? $globalOffer : ($product->zei_offer ? $product->zei_offer : null);
+                    if($offerId) {
+                        zei_api::validateOffer($offerId, $order->zei_profile);
+                    }
                 }
             }
         }

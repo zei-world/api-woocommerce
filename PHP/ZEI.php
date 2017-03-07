@@ -20,13 +20,14 @@ class ZEI {
      * Your Zero ecoimpact API id key
      * @var string
      */
-    static private $id = "";
+    static private $id = "2221bf5f52d804723d4a9fa41fec5760";
 
     /**
      * Your Zero ecoimpact API secret key
      * @var string
      */
-    static private $secret = "";
+    static private $secret = "582dbdce2ccdfb75b9998985800390476a797f49b32fe";
+
     /**
      * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
      * Default timeout is set to 2 seconds
@@ -38,13 +39,13 @@ class ZEI {
      * Change this value to see errors when they appends
      * @var bool
      */
-    static private $debug = false;
+    static private $debug = true;
 
     /* ==============================================================================================================
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
      * ============================================================================================================== */
 
-    static private $api = "https://zero-ecoimpact.org/api/v2/";
+    static private $api = "http://zei.local/app_dev.php/api/v2/";
 
     static private function request($path, $params = array()) {
         $url = self::$api.$path."?id=".self::$id."&secret=".self::$secret;
