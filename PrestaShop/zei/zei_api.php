@@ -4,11 +4,11 @@ if(!defined('_PS_VERSION_')) exit;
 
 class zei_api {
 
-    private static $debug = true;
+    private static $debug = false;
 
     private static $timeout = 2;
 
-    private static $api = "begonia.zero-ecoimpact.org/api/v2/";
+    private static $api = "zero-ecoimpact.org/api/v2/";
 
     static private function request($path, $params = array()) {
 
@@ -47,7 +47,7 @@ class zei_api {
         // Prestashop options
         $id = Configuration::get('zei_api_key');
 
-        return "https://".self::$api.'script'.
+        return self::$api.'script'.
             '?id=' . $id .
             '&b2c=' . ($b2c ? 1 : 0).
             '&b2b=' . ($b2b ? 1 : 0).
