@@ -47,7 +47,7 @@ class zei_api {
         // Prestashop options
         $id = Configuration::get('zei_api_key');
 
-        return self::$api.'script'.
+        return "//".self::$api.'script'.
             '?id=' . $id .
             '&b2c=' . ($b2c ? 1 : 0).
             '&b2b=' . ($b2b ? 1 : 0).
