@@ -20,34 +20,34 @@ class ZEI {
      * Your Zero ecoimpact API id key
      * @var string
      */
-    static private $id = "2221bf5f52d804723d4a9fa41fec5760";
+    private static $id = "";
 
     /**
      * Your Zero ecoimpact API secret key
      * @var string
      */
-    static private $secret = "582dbdce2ccdfb75b9998985800390476a797f49b32fe";
+    private static $secret = "";
 
     /**
      * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
      * Default timeout is set to 2 seconds
      * @var int
      */
-    static private $timeout = 2;
+    private static $timeout = 2;
 
     /**
      * Change this value to see errors when they appends
      * @var bool
      */
-    static private $debug = true;
+    private static $debug = false;
 
     /* ==============================================================================================================
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
      * ============================================================================================================== */
 
-    static private $api = "http://zei.local/app_dev.php/api/v2/";
+    private static $api = "https://zero-ecoimpact.org/api/v2/";
 
-    static private function request($path, $params = array()) {
+    private static function request($path, $params = array()) {
         $url = self::$api.$path."?id=".self::$id."&secret=".self::$secret;
         foreach($params as $param => $value) $url .= "&".$param."=".$value;
 
@@ -101,7 +101,7 @@ class ZEI {
         return false;
     }
 
-    static private function rewardRequest($code, $confirm = 0) {
+    private static function rewardRequest($code, $confirm = 0) {
         return self::request('validation/reward/'.$code, array('confirm' => $confirm));
     }
 
