@@ -83,7 +83,7 @@ class ZEI extends Module {
         $helper = new HelperForm();
         $helper->module = $this;
         $helper->name_controller = $this->name;
-        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->token = $token = Tools::getAdminTokenLite('AdminModules');
         $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
 
         $default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
@@ -176,14 +176,12 @@ class ZEI extends Module {
         $helper->fields_value['zei_api_https'] = ($https == 0 || $https == 1) ? $https : 1;
 
         $helper->toolbar_btn = array(
-            'save' =>
-                array(
-                    'desc' => $this->l('Save'),
-                    'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
-                        '&token='.Tools::getAdminTokenLite('AdminModules'),
-                ),
+            'save' => array(
+                'desc' => $this->l('Save'),
+                'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.'&token='.$token
+            ),
             'back' => array(
-                'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
+                'href' => AdminController::$currentIndex.'&token='.$token,
                 'desc' => $this->l('Back to list')
             )
         );
