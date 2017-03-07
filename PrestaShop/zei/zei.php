@@ -249,27 +249,29 @@ class ZEI extends Module {
     }
 
     public function hookDisplayOrderConfirmation($params) {
-        $cookie = $_COOKIE["zei"];
-        if($cookie && ($order = $params['order'])) {
+        if(($cookie = $_COOKIE["zei"]) && ($order = $params['order'])) {
             $order->zei_profile = $cookie;
             $order->save();
+            unset($_COOKIE['zei']);
         }
     }
 
     public function hookActionPaymentConfirmation($params) {
         if(($order = new Order($params['id_order'])) && $order->zei_profile) {
-
             $globalOffer = Configuration::get('zei_global_offer');
 
-            var_dump($params['cart']);die;
-
             foreach($params['cart']->getProducts() as $cartProduct) {
+
                 if(($product = new Product($cartProduct['id_product']))) {
+
                     $offerId = $globalOffer ? $globalOffer : ($product->zei_offer ? $product->zei_offer : null);
+
                     if($offerId) {
-                        zei_api::validateOffer($offerId, $order->zei_profile);
+                        zei_api::validateOffer($offerId, $order->zei_profile, $cartProduct['quantity']);
                     }
+
                 }
+
             }
         }
     }
