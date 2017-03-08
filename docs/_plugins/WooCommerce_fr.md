@@ -16,7 +16,7 @@ position: 2
 5. Pour vos récompenses, référez-vous à la section suivante
 6. Laissez la magie se produire !
 
-**Codes promo pour les récompnses**
+**Codes promo pour les récompenses**
 
 Les codes édités sur ZEI doivent fonctionner sur votre boutique, pour cela vous devez donc éditer un code promo WooCommerce :
 
