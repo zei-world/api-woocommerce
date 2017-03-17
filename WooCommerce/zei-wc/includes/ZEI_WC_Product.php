@@ -21,41 +21,14 @@ class ZEI_WC_Product {
     }
 
     public function zei_offers_add_fields() {
-        global $woocommerce, $post;
-
-        $token = ZEI_WC_API::getToken();
-
-        if($token) {
-            $group = false;
-
-            // OFFERS
-            $offers = ZEI_WC_API::getOffersList($token);
-            if($offers) {
-                echo '<div class="options_group">'; $group = true;
-                woocommerce_wp_select(array(
-                    'id'      => '_zei_offer',
-                    'label'   => __('Zero ecoimpact offer', 'woocommerce'),
-                    'options' => array("disabled" => "") + $offers
-                ));
-            }
-
-            // REWARDS
-            /*if(get_option('woocommerce_enable_coupons') === "yes") {
-                $rewards = ZEI_WC_API::getRewardsList($token);
-                if($rewards) {
-                    if(!$group) {
-                        echo '<div class="options_group">';
-                        $group = true;
-                    }
-                    woocommerce_wp_select(array(
-                        'id'      => '_zei_reward',
-                        'label'   => __('Zero ecoimpact reward', 'woocommerce'),
-                        'options' => array("disabled" => "") + $rewards
-                    ));
-                }
-            } // DESACTIVE CAR NON UTILISE */
-
-            if($group) echo '</div>';
+        if($offers = ZEI_WC_API::getOffersList()) {
+            echo '<div class="options_group">';
+            woocommerce_wp_select(array(
+                'id'      => '_zei_offer',
+                'label'   => __('Zero ecoimpact offer', 'woocommerce'),
+                'options' => array("disabled" => "") + $offers
+            ));
+            echo '</div>';
         }
     }
 
@@ -64,11 +37,6 @@ class ZEI_WC_Product {
         if(!empty($offer)) {
             if($offer === "disabled") $offer = "";
             update_post_meta($postId, '_zei_offer', esc_attr($offer));
-        }
-        $reward = $_POST['_zei_reward'];
-        if(!empty($reward)) {
-            if($reward === "disabled") $reward = "";
-            update_post_meta($postId, '_zei_reward', esc_attr($reward));
         }
     }
 }

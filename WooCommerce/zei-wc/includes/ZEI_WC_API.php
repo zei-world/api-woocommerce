@@ -10,102 +10,84 @@ if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_API')):
 
 class ZEI_WC_API {
-    private static $URLs = array(
-        "https" => "https://zero-ecoimpact.org/api/",
-        "http" => "http://zero-ecoimpact.org/api/"
-    );
 
-    private static function request($url, $headers) {
-        $header = "";
-        foreach($headers as $k => $v) $header .= $k.": ".$v."\r\n";
-        $response = null;
+    private static $debug = false;
 
-        $tried = false;
+    private static $timeout = 2;
+
+    private static $api = "zei.local/app_dev.php/api/v2/";
+    //private static $api = "zero-ecoimpact.org/api/v2/";
+
+    private static function request($path, $params = array()) {
+
+        // WooCommerce options
         $options = get_option('woocommerce_zei-wc_settings');
-        if(isset($options['zei_api_https']) && $options['zei_api_https'] == 'yes') {
-            $response = file_get_contents(self::$URLs['https'].$url, false, stream_context_create(array(
-                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header),
-                'ssl' => array("verify_peer" => false, "verify_peer_name" => false)
-            )));
-            $tried = true;
+        $id = $options['zei_api_key'];
+        $secret = $options['zei_api_secret'];
+        $scheme = $options['zei_api_https'] == "no" ? "http" : "https";
+
+        $url = $scheme."://".self::$api.$path."?id=".$id."&secret=".$secret;
+        foreach($params as $param => $value) $url .= "&".$param."=".$value;
+        $response = file_get_contents($url, false, stream_context_create([
+            'http' => [ 'method' => "GET", 'timeout' => self::$timeout, 'ignore_errors' => true ],
+            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
+        ]));
+
+        if($response) {
+            $data = json_decode($response, true);
+            if(isset($data['success']) && $data['success']) return $data;
+            if(self::$debug) var_dump('[ZEI] Server reached with an error', $data);
+        } else if(self::$debug) {
+            var_dump('[ZEI] Server not reached...');
         }
 
-        if(!$tried || !$response) {
-            $response = file_get_contents(self::$URLs['http'].$url, false, stream_context_create(array(
-                'http' => array('method' => "GET", 'timeout' => 10, 'header' => $header),
-                'ssl' => array("verify_peer" => false, "verify_peer_name" => false)
-            )));
-        }
-
-        if(!$response) return null;
-        return json_decode($response, true);
+        return false;
     }
 
-    public static function requestToken($id, $secret) {
-        $request = self::request('token', array('id' => $id, 'secret' => $secret));
-        if($request && $request['success'] && $request['token']) return $request['token'];
-        return null;
-    }
+    static function getScriptUrl($b2c = true, $b2b = true) {
+        if(!$b2b && !$b2c) return null;
 
-    public static function getToken($start = true, $force = false) {
-        if($start && !session_id()) session_start();
-        if(!$force && isset($_SESSION['zeiToken'])) return $_SESSION['zeiToken'];
-
+        // WooCommerce options
         $options = get_option('woocommerce_zei-wc_settings');
-        $token = self::requestToken($options['zei_api_key'], $options['zei_api_secret']);
+        $id = $options['zei_api_key'];
 
-        if($token) {
-            $_SESSION['zeiToken'] = $token;
-            return $token;
-        }
-        return null;
+        return "//".self::$api.'script'.
+            '?id=' . $id .
+            '&b2c=' . ($b2c ? 1 : 0).
+            '&b2b=' . ($b2b ? 1 : 0).
+            '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+                || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+                && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+                ? 's' : '').'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
+            ;
     }
 
-    public static function getOffersList($token) {
-        $request = self::request('company/offers', array('token' => $token));
-        if($request['message'] == '[OFFERS] Token has been used or not exist') self::getToken(false, true);
+    static function getOffersList() {
+        $request = self::request('company/offers');
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null;
     }
 
-    public static function getRewardsList($token) {
-        $request = self::request('company/rewards', array('token' => $token));
-        if($request['message'] == '[REWARDS] Token has been used or not exist') self::getToken(false, true);
-        if($request && $request['success'] && $request['message']) return $request['message'];
-        return null;
+    static function validateOffer($offerId, $entity, $amount = 1) {
+        if(preg_match("/^(u|c|o)\/[0-9]+$/", $entity)) {
+            return self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+        }
+        if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
+        return false;
     }
 
-    public static function getModuleUrl($token, $b2b, $b2c) {
-        $params = '?token='.$token;
-
-        // Is B2B or/and B2C
-        $params .= '&b2b=' . ($b2b ? 1 : 0) . '&b2c=' . ($b2c ? 1 : 0);
-
-        // URL for object module
-        $options = get_option('woocommerce_zei-wc_settings');
-        $mode = "http";
-        if(isset($options['zei_api_https']) && $options['zei_api_https'] == 'yes') $mode .= "s";
-        return self::$URLs[$mode].'module'.$params;
+    private static function rewardRequest($code, $confirm = 0) {
+        return self::request('validation/reward/'.$code, array('confirm' => $confirm));
     }
 
-    public static function validateOffer($token, $offerId, $amount) {
-        $r = self::request('company/offer', array('token' => $token, 'offer' => $offerId, 'amount' => $amount));
-        if($r['message'] == '[OFFER] Token has been used or not exist') self::getToken(false, true);
-        return $r['success'];
+    static function checkReward($code) {
+        return self::rewardRequest($code);
     }
 
-    public static function validateReward($token, $rewardId, $amount) {
-        $r = self::request('company/reward', array('token' => $token, 'reward' => $rewardId, 'amount' => $amount));
-        if($r['message'] == '[REWARD] Token has been used or not exist') self::getToken(false, true);
-        return $r['success'];
+    static function validateReward($code) {
+        return self::rewardRequest($code, 1);
     }
 
-    public static function codesValidate($code) {
-        $request = self::request('company/codes', array('token' => self::getToken(false), 'code' => $code));
-        if($request['message'] == '[CODES] Token has been used or not exist') self::getToken(false, true);
-        if($request && $request['success'] && $request['message']) return $request['message'];
-        return null;
-    }
 }
 
 endif;

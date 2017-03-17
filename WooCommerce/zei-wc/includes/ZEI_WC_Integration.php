@@ -15,8 +15,6 @@ class ZEI_WC_Integration extends WC_Integration {
 	 * Init and hook in the integration.
 	 */
 	public function __construct() {
-		global $woocommerce;
-
 		$this->id = 'zei-wc';
 		$this->method_title = __('Zero ecoimpact', 'woocommerce-zei-wc');
 		$this->method_description = __(
@@ -80,8 +78,7 @@ class ZEI_WC_Integration extends WC_Integration {
             'desc_tip'          => false,
             'options'           => array(
                 0 => 'After "Order Review" (recommended)',
-                1 => 'On "Additional Information"',
-                //2 => 'On order validation page'
+                1 => 'On "Additional Information"'
             ),
             'default'           => 0
         );
@@ -91,19 +88,17 @@ class ZEI_WC_Integration extends WC_Integration {
             isset($_GET['tab']) && $_GET['tab'] === "integration" &&
             $this->get_option('zei_api_key') && $this->get_option('zei_api_secret')
         ) {
-            $token = ZEI_WC_API::getToken();
-            if($token) {
-                $offers = ZEI_WC_API::getOffersList($token);
-                if($offers) {
-                    $fields['zei_global_offer'] = array(
-                        'title'             => __('Global offer', 'woocommerce-zei-wc'),
-                        'type'              => 'select',
-                        'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
-                        'desc_tip'          => false,
-                        'options'           => array(0 => '') + $offers,
-                        'default'           => ''
-                    );
-                }
+
+            $offers = ZEI_WC_API::getOffersList();
+            if($offers) {
+                $fields['zei_global_offer'] = array(
+                    'title'             => __('Global offer', 'woocommerce-zei-wc'),
+                    'type'              => 'select',
+                    'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
+                    'desc_tip'          => false,
+                    'options'           => array(0 => '') + $offers,
+                    'default'           => ''
+                );
             }
         }
 

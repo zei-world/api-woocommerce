@@ -3,7 +3,7 @@
  * Plugin Name: Zero ecoimpact - WooCommerce
  * Plugin URI: https://zero-ecoimpact.org
  * Description: WooCommerce extension for Zero ecoimpact API
- * Version: 1.3
+ * Version: 1.4
  * Author: Nazim from ZEI
  * Author URI: https://zero-ecoimpact.org/fr/profile/1
  * Requires at least: 4.4
@@ -35,6 +35,7 @@ class ZEI_WC {
 
             $options = get_option('woocommerce_zei-wc_settings');
             if($options && $options['zei_api_key'] && $options['zei_api_secret']) {
+
                 // PRODUCT
                 if(!isset($options['zei_global_offer']) || $options['zei_global_offer'] == 0) {
                     include_once 'includes/ZEI_WC_Product.php';
