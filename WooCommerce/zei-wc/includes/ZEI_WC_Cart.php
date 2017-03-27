@@ -36,7 +36,7 @@ class ZEI_WC_Cart {
     }
 
     public function wc_get_coupon_data($valid, $coupon) {
-        if(substr($coupon, 0, 11) === 'zei_reward_') return false;
+        if(substr($coupon, 0, 11) == 'zei_reward_') return false;
         $reward = ZEI_WC_API::checkReward(strtoupper($coupon));
         if($reward['success'] && !$this->couponExists($coupon)) {
             $rewardId = $reward['reward'];
@@ -73,7 +73,7 @@ class ZEI_WC_Cart {
         global $woocommerce;
 
         $options = get_option('woocommerce_zei-wc_settings');
-        $display = isset($options['zei_global_offer']) && $options['zei_global_offer'] == 0;
+        $display = isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0;
 
         if(!$display) {
             foreach($woocommerce->cart->get_cart() as $item) {
@@ -94,7 +94,7 @@ class ZEI_WC_Cart {
         $options = get_option('woocommerce_zei-wc_settings');
 
         // Offer Id : Global or item
-        $offerId = ($options && isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0)
+        $offerId = isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0
             ? $options['zei_global_offer']
             : get_post_meta($item['product_id'], '_zei_offer', true);
 
@@ -108,7 +108,7 @@ class ZEI_WC_Cart {
         // OFFERS
         if(isset($_COOKIE['zei'])) {
             foreach($order->get_items() as $item) {
-                $profile = get_post_meta($orderId, $_COOKIE['zei'], true);
+                $profile = $_COOKIE['zei'];
                 if($profile) $this->validateOffer($item, $profile);
             }
         }
