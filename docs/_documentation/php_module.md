@@ -3,7 +3,7 @@ title: PHP Module
 position: 2
 ---
 
-This example was written to explain how to use our already written PHP library.
+This example was written to explain how to use our PHP class.
 To go fast, all you need is to retrieve the ZEI.php file and follow the instructions :
 
 1. [Download](https://raw.githubusercontent.com/zeroecoimpact/API/master/PHP/ZEI.php) and put ZEI.php on your source
