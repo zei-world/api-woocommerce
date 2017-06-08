@@ -12,7 +12,6 @@ if(!class_exists('ZEI_WC_Integration')):
 
 class ZEI_WC_Integration extends WC_Integration {
 
-    private $connected = false;
     private $offers = [];
 
 	/**
@@ -48,19 +47,20 @@ class ZEI_WC_Integration extends WC_Integration {
 	    if((!isset($_GET['page']) || $_GET['page'] !== "wc-settings")
             && (!isset($_GET['tab']) || $_GET['tab'] !== "integration")) return null;
 
+        if(!$this->get_option('zei_api_key') || !$this->get_option('zei_api_secret')) return null;
+
 	    $content = "<br/></br><strong>Status</strong><br/>";
 
         $offers = ZEI_WC_API::getOffersList();
         if($offers === null) {
             $https = $this->get_option('zei_api_https');
-            if($https && $https === 'yes') {
+            if(!$https || $https === 'yes') {
                 return $content."✗ Error while connecting to ZEI servers, <strong>try to disable HTTPS</strong><br/>";
             }
             return $content."✗ Error while connecting to servers, <strong>contact ZEI team</strong><br/>";
         }
 
         $content .= "✓ Connected to ZEI servers<br/>";
-        $this->connected = true;
 
         if($offers === false) return $content."✗ Wrong API id and/or secret<br/>";
 
@@ -76,30 +76,30 @@ class ZEI_WC_Integration extends WC_Integration {
 	public function init_form_fields() {
         $fields = array();
 
-        if($this->connected) {
-            $fields['zei_api_key'] = array(
-                'title'             => __('API Key', 'woocommerce-zei-wc'),
-                'type'              => 'text',
-                'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
-                'desc_tip'          => false,
-                'default'           => ''
-            );
+        $fields['zei_api_key'] = array(
+            'title'             => __('API Key', 'woocommerce-zei-wc'),
+            'type'              => 'text',
+            'description'       => __('Enter your ZEI API Key from your company tools.', 'woocommerce-zei-wc'),
+            'desc_tip'          => false,
+            'default'           => ''
+        );
 
-            $fields['zei_api_secret'] = array(
-                'title'             => __('API Secret', 'woocommerce-zei-wc'),
-                'type'              => 'text',
-                'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
-                'desc_tip'          => false,
-                'default'           => ''
+        $fields['zei_api_secret'] = array(
+            'title'             => __('API Secret', 'woocommerce-zei-wc'),
+            'type'              => 'text',
+            'description'       => __('Enter your ZEI API Secret from your company tools.', 'woocommerce-zei-wc'),
+            'desc_tip'          => false,
+            'default'           => ''
+        );
+
+        if($this->get_option('zei_api_key') && $this->get_option('zei_api_secret')) {
+            $fields['zei_api_https'] = array(
+                'title'             => __('Use HTTPS', 'woocommerce-zei-wc'),
+                'type'              => 'checkbox',
+                'description'       => __('Use or not secure API requests.', 'woocommerce-zei-wc'),
+                'default'           => 'yes'
             );
         }
-
-        $fields['zei_api_https'] = array(
-            'title'             => __('Use HTTPS', 'woocommerce-zei-wc'),
-            'type'              => 'checkbox',
-            'description'       => __('Use or not secure API requests.', 'woocommerce-zei-wc'),
-            'default'           => 'yes'
-        );
 
         if($this->offers && sizeof($this->offers) > 0) {
 

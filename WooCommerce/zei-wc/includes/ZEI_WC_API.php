@@ -23,7 +23,7 @@ class ZEI_WC_API {
         $options = get_option('woocommerce_zei-wc_settings');
         $id = $options['zei_api_key'];
         $secret = $options['zei_api_secret'];
-        $scheme = $options['zei_api_https'] == "no" ? "http" : "https";
+        $scheme = array_key_exists('zei_api_https', $options) && $options['zei_api_https'] == "no" ? "http" : "https";
 
         $url = $scheme."://".self::$api.$path."?id=".$id."&secret=".$secret;
         foreach($params as $param => $value) $url .= "&".$param."=".$value;
@@ -31,10 +31,21 @@ class ZEI_WC_API {
         $original_errors = error_reporting();
         if(!self::$debug) error_reporting(0);
 
-        $response = file_get_contents($url, false, stream_context_create([
-            'http' => [ 'method' => "GET", 'timeout' => self::$timeout, 'ignore_errors' => true ],
-            'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
-        ]));
+        if(function_exists('curl_version')) {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, self::$timeout);
+            curl_setopt($ch, CURLOPT_TIMEOUT, self::$timeout);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($ch);
+            curl_close($ch);
+        } else {
+            $response = file_get_contents($url, false, stream_context_create([
+                'http' => ['method' => "GET", 'timeout' => self::$timeout, 'ignore_errors' => true],
+                'ssl' => ["verify_peer" => false, "verify_peer_name" => false]
+            ]));
+        }
 
         if(!self::$debug) error_reporting($original_errors);
 
