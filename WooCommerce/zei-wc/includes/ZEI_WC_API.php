@@ -27,20 +27,27 @@ class ZEI_WC_API {
 
         $url = $scheme."://".self::$api.$path."?id=".$id."&secret=".$secret;
         foreach($params as $param => $value) $url .= "&".$param."=".$value;
+
+        $original_errors = error_reporting();
+        if(!self::$debug) error_reporting(0);
+
         $response = file_get_contents($url, false, stream_context_create([
             'http' => [ 'method' => "GET", 'timeout' => self::$timeout, 'ignore_errors' => true ],
             'ssl' => [ "verify_peer" => false, "verify_peer_name" => false ]
         ]));
 
+        if(!self::$debug) error_reporting($original_errors);
+
         if($response) {
             $data = json_decode($response, true);
             if(isset($data['success']) && $data['success']) return $data;
             if(self::$debug) var_dump('[ZEI] Server reached with an error', $data);
+            return false;
         } else if(self::$debug) {
             var_dump('[ZEI] Server not reached...');
         }
 
-        return false;
+        return null;
     }
 
     static function getScriptUrl($b2c = true, $b2b = true) {
@@ -64,7 +71,7 @@ class ZEI_WC_API {
     static function getOffersList() {
         $request = self::request('company/offers');
         if($request && $request['success'] && $request['message']) return $request['message'];
-        return null;
+        return $request;
     }
 
     static function validateOffer($offerId, $entity, $amount = 1) {
