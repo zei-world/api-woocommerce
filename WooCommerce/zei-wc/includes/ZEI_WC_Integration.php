@@ -52,6 +52,7 @@ class ZEI_WC_Integration extends WC_Integration {
 	    $content = "<br/></br><strong>Status</strong><br/>";
 
         $offers = ZEI_WC_API::getOffersList();
+
         if($offers === null) {
             $https = $this->get_option('zei_api_https');
             if(!$https || $https === 'yes') {
@@ -64,8 +65,8 @@ class ZEI_WC_Integration extends WC_Integration {
 
         if($offers === false) return $content."✗ Wrong API id and/or secret<br/>";
 
-        $this->offers = $offers;
-	    return $content."✓ Found ".sizeof($offers)." offer(s)<br/>";
+        $this->offers = isset($offers['message']) ? $offers['message'] : $offers;
+	    return $content."✓ Found ".sizeof($this->offers)." offer(s)<br/>";
     }
 
 	/**
