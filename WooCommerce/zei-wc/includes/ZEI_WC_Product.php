@@ -21,7 +21,8 @@ class ZEI_WC_Product {
     }
 
     public function zei_offers_add_fields() {
-        if($offers = ZEI_WC_API::getOffersList()) {
+        $offersList = ZEI_WC_API::getOffersList();
+        if($offers = (isset($offersList['message']) ? $offersList['message'] : $offersList)) {
             echo '<div class="options_group">';
             woocommerce_wp_select(array(
                 'id'      => '_zei_offer',

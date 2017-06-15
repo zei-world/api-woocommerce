@@ -94,9 +94,8 @@ class ZEI_WC_Cart {
         $options = get_option('woocommerce_zei-wc_settings');
 
         // Offer Id : Global or item
-        $offerId = isset($options['zei_global_offer']) && $options['zei_global_offer'] != 0
-            ? $options['zei_global_offer']
-            : get_post_meta($item['product_id'], '_zei_offer', true);
+        $post = get_post_meta($item['product_id'], '_zei_offer', true);
+        $offerId = (isset($post) && $post !== 0) ? $post : $options['zei_global_offer'];
 
         if($offerId) return ZEI_WC_API::validateOffer($offerId, $entity, $item['qty']);
         return false;
