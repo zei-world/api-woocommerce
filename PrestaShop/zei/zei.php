@@ -191,11 +191,11 @@ class ZEI extends Module {
 
     public function alterTable($remove = false) {
         if($remove) {
-            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN IF EXISTS `zei_offer`; ';
-            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders DROP COLUMN IF EXISTS `zei_profile`; ';
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product DROP COLUMN `zei_offer`;';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders DROP COLUMN `zei_profile`;';
         } else {
-            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD IF NOT EXISTS `zei_offer` int NOT NULL; ';
-            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD IF NOT EXISTS `zei_profile` text NOT NULL; ';
+            $sql = 'ALTER TABLE ' . _DB_PREFIX_ . 'product ADD COLUMN `zei_offer` int NOT NULL;';
+            $sql .= 'ALTER TABLE ' . _DB_PREFIX_ . 'orders ADD COLUMN `zei_profile` text NOT NULL;';
         }
         return Db::getInstance()->Execute($sql);
     }
