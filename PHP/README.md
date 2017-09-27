@@ -1,5 +1,5 @@
 PHP Version
 ===========
 
-[Documentation](http://docs.zero-ecoimpact.org#documentationmodule)
+[Documentation](http://docs.zei-world.com#documentationmodule)
 -------------------------------------------------------------------

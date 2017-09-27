@@ -19,10 +19,10 @@ class ZEI_WC_Integration extends WC_Integration {
 	 */
 	public function __construct() {
 		$this->id = 'zei-wc';
-		$this->method_title = 'Zero ecoimpact';
+		$this->method_title = 'Zei';
 		$this->method_description =
                 "For your API credentials go to "
-                ."<a href='https://zero-ecoimpact.org' target='_blank'>Zero ecoimpact</a>"
+                ."<a href='https://zei-world.com' target='_blank'>Zei</a>"
                 .", then you could find \"API\" in \"My Tools\" from your Company Profile.<br/>"
                 ."After that, you'll be able to validate your offers and rewards from each WooCommerce product."
         .$this->getStatus();

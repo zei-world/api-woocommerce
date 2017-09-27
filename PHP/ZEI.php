@@ -8,8 +8,8 @@
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
  *    @   @ @ @ @ @   @             Version 2.0 - PHP Edition
- *     @             @              Zero ecoimpact (https://zero-ecoimpact.org)
- *      @ @ @ @ @ @ @               Nazim from ZEI (nazim.lachter@zero-ecoimpact.org)
+ *     @             @              Zei (https://zei-world.com)
+ *      @ @ @ @ @ @ @               Nazim from Zei (nazim.lachter@zero-ecoimpact.org)
  */
 
 /**
@@ -17,19 +17,19 @@
  */
 class ZEI {
     /**
-     * Your Zero ecoimpact API id key
+     * Your Zei API id key
      * @var string
      */
     private static $id = "";
 
     /**
-     * Your Zero ecoimpact API secret key
+     * Your Zei API secret key
      * @var string
      */
     private static $secret = "";
 
     /**
-     * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
+     * Change this value to update the maximum delay - in seconds - waiting for a Zei's servers response
      * Default timeout is set to 2 seconds
      * @var int
      */
@@ -45,7 +45,7 @@ class ZEI {
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
      * ============================================================================================================== */
 
-    private static $api = "https://zero-ecoimpact.org/api/v2/";
+    private static $api = "https://zei-world.com/api/v2/";
 
     private static function request($path, $params = array()) {
         $url = self::$api.$path."?id=".self::$id."&secret=".self::$secret;

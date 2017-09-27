@@ -1,5 +1,5 @@
-Zero ecoimpact API
+Zei API
 ==================
 
-[Documentation](http://docs.zero-ecoimpact.org)
+[Documentation](http://docs.zei-world.com)
 -----------------------------------------------

@@ -8,7 +8,7 @@
     <title>ZEI API - Full PHP example</title>
 </head>
 <body>
-    <h1>Zero ecoimpact API - PHP - Rewards</h1>
+    <h1>Zei API - PHP - Rewards</h1>
 
     <h2>Part 1 : Check if a code is valid</h2>
     <?php

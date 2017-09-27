@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Zero ecoimpact - WooCommerce
- * Plugin URI: https://zero-ecoimpact.org
- * Description: WooCommerce extension for Zero ecoimpact API
+ * Plugin Name: Zei - WooCommerce
+ * Plugin URI: https://zei-world.com
+ * Description: WooCommerce extension for Zei API
  * Version: 1.6
  * Author: Nazim from ZEI
- * Author URI: https://zero-ecoimpact.org/fr/profile/1
+ * Author URI: https://zei-world.com/fr/profile/1
  * Requires at least: 4.4
  * Tested up to: 4.7
  *

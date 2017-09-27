@@ -1,5 +1,5 @@
 WooCommerce
 ===========
 
-[Documentation](http://docs.zero-ecoimpact.org#pluginsWooCommerce)
+[Documentation](http://docs.zei-world.com#pluginsWooCommerce)
 ------------------------------------------------------------------

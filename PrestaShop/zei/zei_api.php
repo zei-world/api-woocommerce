@@ -8,7 +8,7 @@ class zei_api {
 
     private static $timeout = 2;
 
-    private static $api = "zero-ecoimpact.org/api/v2/";
+    private static $api = "zei-world.com/api/v2/";
 
     static private function request($path, $params = array()) {
 

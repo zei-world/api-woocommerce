@@ -26,7 +26,7 @@ class ZEI_WC_Product {
             echo '<div class="options_group">';
             woocommerce_wp_select(array(
                 'id'      => '_zei_offer',
-                'label'   => __('Zero ecoimpact offer', 'woocommerce'),
+                'label'   => __('Zei offer', 'woocommerce'),
                 'options' => array("disabled" => "") + $offers
             ));
             echo '</div>';

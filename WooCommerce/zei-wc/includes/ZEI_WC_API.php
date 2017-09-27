@@ -15,7 +15,7 @@ class ZEI_WC_API {
 
     private static $timeout = 2;
 
-    private static $api = "zero-ecoimpact.org/api/v2/";
+    private static $api = "zei-world.com/api/v2/";
 
     private static function request($path, $params = array()) {
 

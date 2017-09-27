@@ -6,7 +6,7 @@
     <title>ZEI API - Full PHP example</title>
 </head>
 <body>
-    <h1>Zero ecoimpact API - PHP - Offers</h1>
+    <h1>Zei API - PHP - Offers</h1>
 
     <?php
         $profile = $_COOKIE["zei"]; // The current user profile is stored in a cookie named "zei"

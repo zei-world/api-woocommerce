@@ -28,11 +28,11 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 
 **It will gives you that (if you are connected and not connected on ZEI):**
 
-![](/images/module.jpg "Zero ecoimpact account module")
+![](/images/module.jpg "Zei account module")
 
 **If you click on the button, it will open a window to select your ZEI profile :**
 
-![](/images/window.jpg "Zero ecoimpact login and register page")
+![](/images/window.jpg "Zei login and register page")
 
 **Finally, validate your offer or your reward :**
 

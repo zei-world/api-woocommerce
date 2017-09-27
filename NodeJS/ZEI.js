@@ -7,8 +7,8 @@
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
  *    @   @ @ @ @ @   @             Version 1.0 - NodeJS Edition
- *     @             @              Zero ecoimpact (https://zero-ecoimpact.org)
- *      @ @ @ @ @ @ @               Nazim from ZEI (nazim.lachter@zero-ecoimpact.org)
+ *     @             @              Zei (https://zei-world.com)
+ *      @ @ @ @ @ @ @               Nazim from Zei (nazim.lachter@zero-ecoimpact.org)
  */
 
 var REQUEST = require("request"); // NodeJS Request
@@ -20,17 +20,17 @@ var REQUEST = require("request"); // NodeJS Request
 //  \-------------------------------/
 
 /*
- * Your Zero ecoimpact API id key
+ * Your Zei API id key
  */
 var ID = "";
 
 /*
- * Your Zero ecoimpact API secret key
+ * Your Zei API secret key
  */
 var SECRET = "";
 
 /**
- * Change this value to update the maximum delay - in seconds - waiting for a Zero ecoimpact's servers response
+ * Change this value to update the maximum delay - in seconds - waiting for a Zei's servers response
  * Default timeout is set to 2 seconds
  */
 var TIMEOUT = 2;
@@ -44,7 +44,7 @@ var DEBUG = false;
  *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
  * ============================================================================================================== */
 
-var HOST = "zero-ecoimpact.org";
+var HOST = "zei-world.com";
 
 var API = "https://" + HOST + "/api/v2/";
 

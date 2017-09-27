@@ -17,8 +17,8 @@ class ZEI extends Module {
 
         parent::__construct();
 
-        $this->displayName = $this->l('Zero ecoimpact');
-        $this->description = $this->l('Link your company offers and rewards from Zero ecoimpact !');
+        $this->displayName = $this->l('Zei');
+        $this->description = $this->l('Link your company offers and rewards from Zei !');
 
         $this->confirmUninstall = $this->l('Are you sure to remove your link with ZEI ?');
 
@@ -204,11 +204,11 @@ class ZEI extends Module {
         $errors = "";
 
         if(!($key = Configuration::get('zei_api_key'))) {
-            $errors .= "Your Zero ecoimpact API key is not set...".PHP_EOL;
+            $errors .= "Your Zei API key is not set...".PHP_EOL;
         }
 
         if(!($secret = Configuration::get('zei_api_secret'))) {
-            $errors .= "Your Zero ecoimpact API secret is not set...".PHP_EOL;
+            $errors .= "Your Zei API secret is not set...".PHP_EOL;
         }
 
         if(!$errors) {

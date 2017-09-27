@@ -6,7 +6,7 @@
         <title>ZEI API - Full PHP example</title>
     </head>
     <body style="margin: 60px; line-height: 20px;">
-        <h1>Zero ecoimpact API - PHP - User module</h1>
+        <h1>Zei API - PHP - User module</h1>
 
         <object id="ZEI"></object>
 
