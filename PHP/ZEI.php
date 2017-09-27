@@ -7,7 +7,7 @@
  *  @   @  @       @    @        d8' db 88.       .88.        88   88 88        .88.
  *  @   @  @   @    @   @       d88888P Y88888P Y888888P      YP   YP 88      Y888888P
  *   @   @  @ @    @   @
- *    @   @ @ @ @ @   @             Version 2.0 - PHP Edition
+ *    @   @ @ @ @ @   @             Version 2.1 - PHP Edition
  *     @             @              Zei (https://zei-world.com)
  *      @ @ @ @ @ @ @               Nazim from Zei (nazim.lachter@zero-ecoimpact.org)
  */
