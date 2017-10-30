@@ -49,15 +49,9 @@ class ZEI_WC_API {
 
         if(!self::$debug) error_reporting($original_errors);
 
-        if($response) {
-            $data = json_decode($response, true);
-            if(isset($data['success']) && $data['success']) return $data;
-            if(self::$debug) var_dump('[ZEI] Server reached with an error', $data);
-            return false;
-        } else if(self::$debug) {
-            var_dump('[ZEI] Server not reached...');
-        }
-
+        if($response) return json_decode($response, true);
+        
+        if(self::$debug) var_dump('[ZEI] Server not reached...');
         return null;
     }
 
@@ -82,19 +76,30 @@ class ZEI_WC_API {
     static function getOffersList() {
         $request = self::request('company/offers');
         if($request && $request['success'] && $request['message']) return $request['message'];
-        return $request;
+        return null; // Bad response or no success
     }
 
     static function validateOffer($offerId, $entity, $amount = 1) {
-        if(preg_match("/^(u|c|o)\/[0-9]+$/", $entity)) {
-            return self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+        //if(preg_match("/^(u|o)\/[0-9]+$/", $entity)) {
+        $request = self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+        if($request && isset($request['success'])) return $request['success'];
+        //}
+        //if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
+        if(self::$debug) {
+            var_dump('[ZEI] Invalid request reponse :');
+            var_dump($request);
         }
-        if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
-        return false;
+        return null; // Invalid response
     }
 
     private static function rewardRequest($code, $confirm = 0) {
-        return self::request('validation/reward/'.$code, array('confirm' => $confirm));
+        $request = self::request('validation/reward/'.$code, array('confirm' => $confirm));
+        if($request && isset($request['success'])) return $request['success'];
+        if(self::$debug) {
+            var_dump('[ZEI] Invalid request reponse :');
+            var_dump($request);
+        }
+        return null; // Invalid response
     }
 
     static function checkReward($code) {
