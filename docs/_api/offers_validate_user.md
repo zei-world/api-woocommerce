@@ -1,5 +1,5 @@
 ---
-title: /v2/validation/offer/{offerId}/{profileId}
+title: /v3/offers/{offerId}/validate/{profileId}
 position: 2.1
 type: get
 description: Validate an offer {offerId} for {profileId}
@@ -7,7 +7,7 @@ right_code: |
   ~~~ json
     {
       "success": true,
-      "message": "Offer validated for..."
+      "message": "Validation de l'offre effectuée !"
     }
   ~~~
   {: title="Response" }
@@ -15,7 +15,8 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[OFFER VALIDATION] ..."
+    "code": "error code",
+    "message": "error message"
   }
   ~~~
   {: title="Error" }
@@ -26,13 +27,13 @@ id
 secret 
 : Your ZEI API secret
 
-amount
+units
 : Applied quantity (default : 1) [OPTIONAL]
 
 **Logique (FR)** :
 
 - Vérifie les valeurs des params envoyés et si l'IP cliente est présente
 - Compare l'IP du client à celle du DNS des domaines enregistrés
-- Vérifie la validité de l'offre (non supprimée, activée, contrat signé et avec la catégorie "En ligne")
+- Vérifie la validité de l'offre (non supprimée, activée, contrat signé et avec le statut "En ligne")
 - Vérifie si l'offre peut s'appliquer à un utilisateur, une entreprise ou une association (B2B / B2C)
 - Valide l'offre pour l'utilisateur, l'entreprise ou l'association

@@ -1,5 +1,5 @@
 ---
-title: /v2/company/rewards
+title: /v3/rewards
 position: 3.0
 type: get
 description: Get your rewards list
@@ -17,7 +17,8 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[COMPANY REWARDS] ..."
+    "code": "error code",
+    "message": "error message"
   }
   ~~~
   {: title="Error" }
