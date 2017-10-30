@@ -1,5 +1,5 @@
 ---
-title: /v2/company/offers
+title: /v3/offers
 position: 2.0
 type: get
 description: Get your offers list
@@ -17,7 +17,8 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[COMPANY OFFERS] ..."
+    "code": "error code",
+    "message": "error message"
   }
   ~~~
   {: title="Error" }

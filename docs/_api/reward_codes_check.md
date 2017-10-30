@@ -1,13 +1,13 @@
 ---
-title: /v2/validation/reward/{code}
+title: /v3/rewardcodes/check/{code}
 position: 3.1
 type: get
-description: Check if a reward code {code} is valid and validate it
+description: Check if a reward code {code} is valid
 right_code: |
   ~~~ json
     {
       "success": true,
-      "message": "Reward validated for..."
+      "message": "Code valide"
     }
   ~~~
   {: title="Response" }
@@ -15,7 +15,8 @@ right_code: |
   ~~~ json
   {
     "success": false,
-    "message": "[REWARD VALIDATION] ..."
+    "code": "error code",
+    "message": "error message"
   }
   ~~~
   {: title="Error" }
@@ -25,9 +26,6 @@ id
 
 secret 
 : Your ZEI API secret
-
-confirm
-: Only check the code (0) or validate (1) (default : 1) [OPTIONAL]
 
 **Logique (FR)** :
 
