@@ -116,12 +116,15 @@ class ZEI_WC_Integration extends WC_Integration {
                 'default'           => 0
             );
 
+            $offers = [];
+            foreach($this->offers as $offerId => $offerData) $offers[$offerId] = $offerData['name'];
+
             $fields['zei_global_offer'] = array(
                 'title'             => __('Global offer', 'woocommerce-zei-wc'),
                 'type'              => 'select',
                 'description'       => __('Use a ZEI offer for the whole store.', 'woocommerce-zei-wc'),
                 'desc_tip'          => false,
-                'options'           => array(0 => '') + $this->offers,
+                'options'           => array(0 => '') + $offers,
                 'default'           => ''
             );
 
