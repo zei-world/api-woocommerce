@@ -45,7 +45,7 @@ class ZEI {
      *            => FROM HERE YOU NO LONGER NEED TO EDIT THE FILE (UNLESS YOU KNOW WHAT YOU ARE DOING ;))
      * ============================================================================================================== */
 
-    private static $api = "https://zei-world.com/api/v2/";
+    private static $api = "https://api.zei-world.com/v3/";
 
     private static function request($path, $params = array()) {
         $url = self::$api.$path."?id=".self::$id."&secret=".self::$secret;
@@ -95,14 +95,10 @@ class ZEI {
      */
     static function validateOffer($offerId, $entity, $amount = 1) {
         if(preg_match("/^(u|c|o)\/[0-9]+$/", $entity)) {
-            return self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+            return self::request('offers/'.$offerId.'/validate/'.$entity, array('units' => $amount));
         }
         if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
         return false;
-    }
-
-    private static function rewardRequest($code, $confirm = 0) {
-        return self::request('validation/reward/'.$code, array('confirm' => $confirm));
     }
 
     /**
@@ -111,7 +107,7 @@ class ZEI {
      * @return bool
      */
     static function checkReward($code) {
-        return self::rewardRequest($code);
+        return self::request('rewardcodes/check/'.$code);
     }
 
     /**
@@ -120,7 +116,7 @@ class ZEI {
      * @return bool
      */
     static function validateReward($code) {
-        return self::rewardRequest($code, 1);
+        return self::request('rewardcodes/validate/'.$code);
     }
 }
 

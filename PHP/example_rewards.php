@@ -22,7 +22,7 @@
     <h2>Part 2 : Validate the reward code</h2>
     <?php
     if(ZEI::validateReward($code)) {
-        echo "Reward validated :)";
+        echo "Reward code validated :)";
     } else {
         echo "Validation failed :(";
     }

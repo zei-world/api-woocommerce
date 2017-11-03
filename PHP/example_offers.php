@@ -10,10 +10,11 @@
 
     <?php
         $profile = $_COOKIE["zei"]; // The current user profile is stored in a cookie named "zei"
-
+        $offerId = 152; // Offer ID
+        $units = 2; // Number of units
         if($profile) {
-            if(ZEI::validateOffer(24, $profile, 2)) {
-                echo "Validation of offer 24 with 2 units successful :)";
+            if(ZEI::validateOffer($offerId, $profile, $units)) {
+                echo "Validation of offer ".$offerId." with ".$units." units successful :)";
             } else {
                 echo "Validation failed :(";
             }
