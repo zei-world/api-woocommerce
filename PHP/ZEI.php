@@ -76,7 +76,7 @@ class ZEI {
      */
     static function getScriptUrl($b2c = true, $b2b = true) {
         if(!$b2b && !$b2c) return null;
-        return self::$api.'script'.
+        return self::$api.'js'.
             '?id=' . self::$id .
             '&b2c=' . ($b2c ? 1 : 0).
             '&b2b=' . ($b2b ? 1 : 0).
