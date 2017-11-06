@@ -62,7 +62,7 @@ class ZEI_WC_API {
         $options = get_option('woocommerce_zei-wc_settings');
         $id = $options['zei_api_key'];
 
-        return "//".self::$api.'script'.
+        return "//".self::$api.'js'.
             '?id=' . $id .
             '&b2c=' . ($b2c ? 1 : 0).
             '&b2b=' . ($b2b ? 1 : 0).
@@ -74,7 +74,7 @@ class ZEI_WC_API {
     }
 
     static function getOffersList() {
-        $request = self::request('offers');
+        $request = self::request('offers/valid');
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null; // Bad response or no success
     }
