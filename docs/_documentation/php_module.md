@@ -4,7 +4,7 @@ position: 2
 ---
 
 This example was written to explain how to use our PHP class.
-To go fast, all you need is to retrieve the ZEI.php file and follow the instructions :
+All you need to do is to retrieve the ZEI.php file and follow the instructions :
 
 1. [Download](https://raw.githubusercontent.com/zeroecoimpact/API/master/PHP/ZEI.php) and put ZEI.php on your source
     files
@@ -26,7 +26,7 @@ To go fast, all you need is to retrieve the ZEI.php file and follow the instruct
 -->
 ```
 
-**It will gives you that (if you are connected and not connected on ZEI):**
+**You will obtain the following result (if you are connected and not connected on ZEI):**
 
 ![](/images/module.jpg "Zei account module")
 

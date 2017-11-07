@@ -15,5 +15,5 @@ position: 3
 6. Si toute votre boutique est concernée par une offre, utilisez l'option "Global offer" après le premier enregistrement
 7. Sinon, vous serez en mesure de gérer vos offres directement depuis les produits concernés : dans un produit
     en particulier depuis "Catalogue" > "Produits", puis dans l'onglet "Options des modules" où vous pourrez
-    trouver l'option "Zei offer"
+    trouver l'option "Zei offer" (attention à ne pas oublier d'enregistrer). 
 8. Laissez la magie se produire !

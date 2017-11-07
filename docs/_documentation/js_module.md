@@ -4,12 +4,12 @@ position: 3
 ---
 
 This example was written to explain how to use our NodeJS class.
-To go fast, all you need is to retrieve the ZEI.js file and follow the instructions :
+All you need to do is to retrieve the ZEI.js file and follow the instructions :
 
 1. [Download](https://raw.githubusercontent.com/zeroecoimpact/API/master/NodeJS/ZEI.js) and put ZEI.js on your source
-    files
-2. Include it in your back-end pages and use the class (see examples)
-3. When the user reaches the end of the process of the offer or the reward, validate it with the right class method
+    files.
+2. Include it in your back-end pages and use the class (see examples).
+3. When the user reaches the end of the process of the offer or the reward, validate it with the right class method.
 
 **Example to display the user module (and generate his token) :**
 
