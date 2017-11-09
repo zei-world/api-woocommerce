@@ -2,7 +2,7 @@
 Contributors: n4zim
 Tags: woocomerce, zei, ecology, api
 Requires at least: 3.7
-Tested up to: 4.7
+Tested up to: 4.9
 Stable tag: 1.8
 License: GPLv3
 
