@@ -22,7 +22,13 @@ class ZEI_WC_Product {
 
     public function zei_offers_add_fields() {
         $offers = [];
-        foreach(ZEI_WC_API::getOffersList() as $offerId => $offerData) $offers[$offerId] = $offerData['name'];
+
+        $list = ZEI_WC_API::getOffersList();
+        if($list !== null) {
+            foreach($list as $offerId => $offerData) {
+                $offers[$offerId] = $offerData['name'];
+            }
+        }
 
         if($offers && count($offers) > 0) {
             echo '<div class="options_group">';
