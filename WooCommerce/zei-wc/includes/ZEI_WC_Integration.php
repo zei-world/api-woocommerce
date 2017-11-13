@@ -38,14 +38,21 @@ class ZEI_WC_Integration extends WC_Integration {
 
 		// Actions
 		add_action('woocommerce_update_options_integration_'.$this->id, array($this, 'process_admin_options'));
+        add_action('woocommerce_update_options', array($this, 'woocommerce_update_options'));
 
 		// Filters
 		add_filter('woocommerce_settings_api_sanitized_fields_'.$this->id, array($this, 'sanitize_settings'));
 	}
 
+    private function isRightPage() {
+        return isset($_GET['page']) && isset($_GET['tab']) &&
+            $_GET['page'] === "wc-settings" &&
+            $_GET['tab'] === "integration" &&
+            (!isset($_GET['section']) || $_GET['section'] === 'zei-wc');
+    }
+
 	public function getStatus() {
-	    if((!isset($_GET['page']) || $_GET['page'] !== "wc-settings")
-            && (!isset($_GET['tab']) || $_GET['tab'] !== "integration")) return null;
+	    if(!$this->isRightPage()) return null;
 
         if(!$this->get_option('zei_api_key') || !$this->get_option('zei_api_secret')) return null;
 
@@ -186,6 +193,17 @@ class ZEI_WC_Integration extends WC_Integration {
         if(isset($_POST[$this->plugin_id.$this->id.'_'.$key])) return $_POST[$this->plugin_id.$this->id.'_'.$key];
         return null;
     }
+
+    public function woocommerce_update_options($callback) {
+        if($this->isRightPage()) {
+            ob_start();
+            WC_Admin_Settings::show_messages();
+            $messages = ob_get_clean();
+            if(strlen($messages) === 0) header("Refresh: 1");
+        }
+        return $callback;
+    }
+
 }
 
 endif;
