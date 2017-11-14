@@ -8,7 +8,7 @@ class zei_api {
 
     private static $timeout = 2;
 
-    private static $api = "api.zei.local/app_dev.php/v3/";
+    private static $api = "api.zei-world.com/v3/";
 
     static private function request($path, $params = array()) {
 
