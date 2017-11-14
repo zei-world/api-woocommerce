@@ -8,7 +8,7 @@ class zei_api {
 
     private static $timeout = 2;
 
-    private static $api = "zei-world.com/api/v2/";
+    private static $api = "api.zei.local/app_dev.php/v3/";
 
     static private function request($path, $params = array()) {
 
@@ -36,8 +36,14 @@ class zei_api {
     }
 
     public static function getOffersList() {
-        $request = self::request('company/offers');
-        if($request && $request['success'] && $request['message']) return $request['message'];
+        $request = self::request('offers/valid');
+        if($request && $request['success'] && $offers = $request['message']) {
+            $list = array();
+            foreach ($offers as $offerId => $offerData) {
+                $list[$offerId] = $offerData['name'];
+            }
+            return $list;
+        }
         return null;
     }
 
@@ -47,7 +53,7 @@ class zei_api {
         // Prestashop options
         $id = Configuration::get('zei_api_key');
 
-        return "//".self::$api.'script'.
+        return "//".self::$api.'js'.
             '?id=' . $id .
             '&b2c=' . ($b2c ? 1 : 0).
             '&b2b=' . ($b2b ? 1 : 0).
@@ -60,7 +66,7 @@ class zei_api {
 
     static function validateOffer($offerId, $entity, $amount = 1) {
         if(preg_match("/^(u|c|o)\/[0-9]+$/", $entity)) {
-            return self::request('validation/offer/'.$offerId.'/'.$entity, array('amount' => $amount));
+            return self::request('offers/'.$offerId.'/validate/'.$entity, array('amount' => $amount));
         }
         if(self::$debug) var_dump('[ZEI] Entity syntax error : \"'.$entity.'\"');
         return false;

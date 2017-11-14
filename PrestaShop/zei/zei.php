@@ -12,7 +12,7 @@ class ZEI extends Module {
         $this->version = '1.1';
         $this->author = 'Nazim from ZEI';
         $this->need_instance = 0;
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
 
         parent::__construct();
@@ -150,8 +150,8 @@ class ZEI extends Module {
             $offers = zei_api::getOffersList();
             if($offers) {
                 $query = array(array('key' => 0, 'name' => ''));
-                foreach($offers as $key => $name) {
-                    array_push($query, array('key' => $key, 'name' => $name));
+                foreach($offers as $id => $name) {
+                    array_push($query, array('key' => $id, 'name' => $name));
                 }
 
                 array_push($form[0]['form']['input'], array(
@@ -238,10 +238,15 @@ class ZEI extends Module {
             ($key = Configuration::get('zei_api_key')) &&
             ($secret = Configuration::get('zei_api_secret'))
         ) {
-            foreach($params['cart']->getProducts() as $cartProduct) {
-                if(($id = $cartProduct['id_product']) && ($product = new Product($id)) && $product->zei_offer) {
-                    $this->context->smarty->assign(array('zei_script' => zei_api::getScriptUrl()));
-                    return $this->display(__FILE__, 'views/module.tpl');
+            if($globalOffer = Configuration::get('zei_global_offer')) {
+                $this->context->smarty->assign(array('zei_script' => zei_api::getScriptUrl()));
+                return $this->display(__FILE__, 'views/module.tpl');
+            } else {
+                foreach($params['cart']->getProducts() as $cartProduct) {
+                    if(($id = $cartProduct['id_product']) && ($product = new Product($id)) && $product->zei_offer) {
+                        $this->context->smarty->assign(array('zei_script' => zei_api::getScriptUrl()));
+                        return $this->display(__FILE__, 'views/module.tpl');
+                    }
                 }
             }
         }
@@ -249,7 +254,8 @@ class ZEI extends Module {
     }
 
     public function hookDisplayOrderConfirmation($params) {
-        if(($cookie = $_COOKIE["zei"]) && ($order = $params['order'])) {
+        $keyParam = key_exists('order',$params) ? 'order' : 'objOrder';
+        if(($cookie = $_COOKIE["zei"]) && ($order = $params[$keyParam])) {
             $order->zei_profile = $cookie;
             $order->save();
             unset($_COOKIE['zei']);
@@ -269,9 +275,7 @@ class ZEI extends Module {
                     if($offerId) {
                         zei_api::validateOffer($offerId, $order->zei_profile, $cartProduct['quantity']);
                     }
-
                 }
-
             }
         }
     }
