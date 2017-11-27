@@ -26,6 +26,7 @@ class ZEI_WC_Cart {
 
         // Points validated
         add_action('woocommerce_order_status_completed', array($this, "completed"));
+        add_action('woocommerce_thankyou', array($this, "thankyou"));
     }
 
     private function couponExists($coupon) {
@@ -101,15 +102,25 @@ class ZEI_WC_Cart {
         if($offerId) return ZEI_WC_API::validateOffer($offerId, $entity, $item['qty']);
         return false;
     }
+    
+    public function thankyou($orderId) {
+        if(isset($_COOKIE['zei'])) {
+            $order = wc_get_order($orderId);
+            $profile = $_COOKIE['zei'];
+            if($profile && strlen(get_post_meta($order->id, '_zei_profile', true)) === 0) {
+                add_post_meta($order->id, '_zei_profile', $profile);
+            }
+        }
+    }
 
     public function completed($orderId) {
         $order = wc_get_order($orderId);
 
         // OFFERS
-        if(isset($_COOKIE['zei'])) {
+        $profile = get_post_meta($order->id, '_zei_profile', true);
+        if(strlen($profile) > 0) {
             foreach($order->get_items() as $item) {
-                $profile = $_COOKIE['zei'];
-                if($profile) $this->validateOffer($item, $profile);
+                $this->validateOffer($item, $profile);
             }
         }
 
