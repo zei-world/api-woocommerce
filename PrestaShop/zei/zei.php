@@ -9,7 +9,7 @@ class ZEI extends Module {
     public function __construct() {
         $this->name = 'zei';
         $this->tab = 'zei_api';
-        $this->version = '1.3';
+        $this->version = '1.3.1';
         $this->author = 'Nazim from ZEI';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
@@ -214,18 +214,32 @@ class ZEI extends Module {
         if(!$errors) {
             if(Configuration::get('zei_global_offer')) {
                 return "You set a global offer :)";
-            } else if(
-                ($id = (int)Tools::getValue('id_product')) ||
-                ($id = (int)$params['request']->attributes->get('id'))
-            ) {
-                $product = new Product($id);
-                if($product && isset($product->id)) {
-                    $this->context->smarty->assign(array(
-                        'zei_offer_list' => zei_api::getOffersList(),
-                        'zei_offer_product' => $product->zei_offer
-                    ));
-                    return $this->display(__FILE__, 'views/field.tpl');
+            }
+
+            // First try
+            $id = Tools::getValue('id_product');
+
+            // Second try
+            if(!$id) {
+                if(is_object($params)) {
+                    $id = $params['request']->attributes->get('id');
+                } else if(is_array($params['request']) && array_key_exists('id', $params['request'])) {
+                    $id = $params['request']['id'];
+                } else {
+                    return "Error : Unavailable product id";
                 }
+            }
+
+            // Getting the product
+            $product = new Product((int)$id);
+
+            // Updating the product
+            if($product && isset($product->id)) {
+                $this->context->smarty->assign(array(
+                    'zei_offer_list' => zei_api::getOffersList(),
+                    'zei_offer_product' => $product->zei_offer
+                ));
+                return $this->display(__FILE__, 'views/field.tpl');
             }
         }
 
