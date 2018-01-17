@@ -6,7 +6,7 @@ position: 2
 This example was written to explain how to use our PHP class.
 All you need to do is to retrieve the ZEI.php file and follow the instructions :
 
-1. [Download](https://raw.githubusercontent.com/zeroecoimpact/API/master/PHP/ZEI.php) and put ZEI.php on your source
+1. [Download](https://raw.githubusercontent.com/zei-world/api/master/PHP/ZEI.php) and put ZEI.php on your source
     files
 2. Include it in your back-end pages and use the class (see examples)
 3. When the user reaches the end of the process of the offer or the reward, validate it with the right class method
