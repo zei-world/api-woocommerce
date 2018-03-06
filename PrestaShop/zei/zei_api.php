@@ -26,7 +26,7 @@ class zei_api {
 
         if($response) {
             $data = json_decode($response, true);
-            if(isset($data['success']) && $data['success']) return $data;
+            if(isset($data['success'])) return $data;
             if(self::$debug) var_dump('[ZEI] Server reached with an error', $data);
         } else if(self::$debug) {
             var_dump('[ZEI] Server not reached...');
