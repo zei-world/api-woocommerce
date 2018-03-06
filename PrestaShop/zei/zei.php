@@ -9,8 +9,8 @@ class ZEI extends Module {
     public function __construct() {
         $this->name = 'zei';
         $this->tab = 'zei_api';
-        $this->version = '1.3.1';
-        $this->author = 'Nazim from ZEI';
+        $this->version = '1.4';
+        $this->author = 'Zei';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
         $this->bootstrap = true;
