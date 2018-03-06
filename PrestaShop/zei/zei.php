@@ -9,7 +9,7 @@ class ZEI extends Module {
     public function __construct() {
         $this->name = 'zei';
         $this->tab = 'zei_api';
-        $this->version = '1.4';
+        $this->version = '1.4.1';
         $this->author = 'Zei';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = array('min' => '1.5', 'max' => _PS_VERSION_);
@@ -214,9 +214,9 @@ class ZEI extends Module {
         }
 
         if(!$errors) {
-            if(Configuration::get('zei_global_offer')) {
+            /*if(Configuration::get('zei_global_offer')) {
                 return "You set a global offer :)";
-            }
+            }*/
 
             // First try
             $id = Tools::getValue('id_product');
