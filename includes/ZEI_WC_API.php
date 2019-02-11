@@ -15,9 +15,9 @@ class ZEI_WC_API {
 
     private static $timeout = 2;
 
-    private static $api = "api.zei-world.com/v3/";
+    private static $api = "api.zei-world.com";
 
-    private static function request($path, $params = array()) {
+    static function request($path, $params = array()) {
 
         // WooCommerce options
         $options = get_option('woocommerce_zei-wc_settings');
@@ -25,7 +25,7 @@ class ZEI_WC_API {
         $secret = $options['zei_api_secret'];
         $scheme = array_key_exists('zei_api_https', $options) && $options['zei_api_https'] == "no" ? "http" : "https";
 
-        $url = $scheme."://".self::$api.$path."?id=".$id."&secret=".$secret;
+        $url = $scheme . "://" . self::$api . $path . "?id=" . $id . "&secret=" . $secret;
         foreach($params as $param => $value) $url .= "&".$param."=".$value;
 
         $original_errors = error_reporting();
@@ -62,10 +62,10 @@ class ZEI_WC_API {
         $options = get_option('woocommerce_zei-wc_settings');
         $id = $options['zei_api_key'];
 
-        return "//".self::$api.'js'.
+        return "//" . self::$api . '/v3/' . 'js'.
             '?id=' . $id .
-            '&b2c=' . ($b2c ? 1 : 0).
-            '&b2b=' . ($b2b ? 1 : 0).
+            '&b2c=' . ($b2c ? 1 : 0) .
+            '&b2b=' . ($b2b ? 1 : 0) .
             '&redirect_uri=http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
                 || $_SERVER['SERVER_PORT'] == 443 || isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
                 && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
@@ -74,13 +74,13 @@ class ZEI_WC_API {
     }
 
     static function getOffersList() {
-        $request = self::request('offers/valid');
+        $request = self::request('/v3/offers/valid');
         if($request && $request['success'] && $request['message']) return $request['message'];
         return null; // Bad response or no success
     }
 
     static function validateOffer($offerId, $entity, $amount = 1) {
-        $request = self::request('offers/'.$offerId.'/validate/'.$entity, array('units' => $amount));
+        $request = self::request('/v3/offers/'.$offerId.'/validate/'.$entity, array('units' => $amount));
         if($request && isset($request['success'])) return $request['success'];
 
         if(self::$debug) {
@@ -91,22 +91,26 @@ class ZEI_WC_API {
     }
 
     static function checkReward($code) {
-        $request = self::request('rewardcodes/check/'.$code);
+        $request = self::request('/v3/rewardcodes/check/'.$code);
         if($request && isset($request['success'])) return $request;
+
         if(self::$debug) {
             var_dump('[ZEI] Invalid request reponse :');
             var_dump($request);
         }
+
         return null; // Invalid response
     }
 
     static function validateReward($code) {
-        $request = self::request('rewardcodes/validate/'.$code);
+        $request = self::request('/v3/rewardcodes/validate/'.$code);
         if($request && isset($request['success'])) return $request;
+
         if(self::$debug) {
             var_dump('[ZEI] Invalid request reponse :');
             var_dump($request);
         }
+
         return null; // Invalid response
     }
 

@@ -101,12 +101,21 @@ class ZEI_WC_Integration extends WC_Integration {
         );
 
         if($this->get_option('zei_api_key') && $this->get_option('zei_api_secret')) {
+
             $fields['zei_api_https'] = array(
                 'title'             => __('Use HTTPS', 'woocommerce-zei-wc'),
                 'type'              => 'checkbox',
                 'description'       => __('Use or not secure API requests.', 'woocommerce-zei-wc'),
                 'default'           => 'yes'
             );
+
+            $fields['zei_api_debugger'] = array(
+                'title'             => __('Enable debugger', 'woocommerce-zei-wc'),
+                'type'              => 'checkbox',
+                'description'       => __('Send more API log informations to solve problems.', 'woocommerce-zei-wc'),
+                'default'           => 'no'
+            );
+        
         }
 
         if($this->offers && sizeof($this->offers) > 0) {

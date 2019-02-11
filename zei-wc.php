@@ -3,9 +3,9 @@
  * Plugin Name: Zei - WooCommerce
  * Plugin URI: https://zei-world.com
  * Description: WooCommerce extension for Zei API
- * Version: 1.8.2
- * Author: Nazim from ZEI
- * Author URI: https://zei-world.com/fr/profile/1
+ * Version: 1.9
+ * Author: Zei
+ * Author URI: https://zei-world.com
  * Requires at least: 3.7
  * Tested up to: 4.9
  *
@@ -45,7 +45,11 @@ class ZEI_WC {
                 // CART
                 include_once 'includes/ZEI_WC_Cart.php';
                 new ZEI_WC_Cart();
-            }
+			}
+			
+			// DEBUGGER
+			include_once 'includes/ZEI_WC_Debugger.php';
+			new ZEI_WC_Debugger();
         }
     }
 

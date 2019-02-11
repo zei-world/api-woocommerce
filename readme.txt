@@ -3,7 +3,7 @@ Contributors: n4zim
 Tags: woocomerce, zei, ecology, api
 Requires at least: 3.7
 Tested up to: 4.9
-Stable tag: 1.8.2
+Stable tag: 1.9
 License: GPLv3
 
 WooCommerce extension for Zei API
@@ -24,6 +24,9 @@ WooCommerce extension for Zei API
 [FR] Toutes les instructions pour l'installation se trouvent sur cette page : (http://docs.zei-world.com/#pluginsWooCommerce_fr)
 
 == Changelog ==
+
+= 1.9 =
+* Debugging logs
 
 = 1.8.2 =
 * Zei profile stored in database
