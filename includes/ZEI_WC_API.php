@@ -9,6 +9,8 @@
 if(!defined('ABSPATH')) exit;
 if(!class_exists('ZEI_WC_API')):
 
+include_once 'ZEI_WC_Debugger.php';
+
 class ZEI_WC_API {
 
     private static $debug = false;
@@ -26,7 +28,16 @@ class ZEI_WC_API {
         $scheme = array_key_exists('zei_api_https', $options) && $options['zei_api_https'] == "no" ? "http" : "https";
 
         $url = $scheme . "://" . self::$api . $path . "?id=" . $id . "&secret=" . $secret;
-        foreach($params as $param => $value) $url .= "&".$param."=".$value;
+        foreach($params as $param => $value) $url .= "&".$param . "=" . urlencode($value);
+
+        if(ZEI_WC_Debugger::$isLoaded) {
+            if(array_key_exists('zei', $_COOKIE)) {
+                $url .= '&debugUser=' . $_COOKIE['zei'];
+            }
+            if(ZEI_WC_Debugger::$hash !== null) {
+                $url .= '&debugHash=' . ZEI_WC_Debugger::$hash;
+            }
+        }
 
         $original_errors = error_reporting();
         if(!self::$debug) error_reporting(0);
@@ -75,43 +86,73 @@ class ZEI_WC_API {
 
     static function getOffersList() {
         $request = self::request('/v3/offers/valid');
-        if($request && $request['success'] && $request['message']) return $request['message'];
-        return null; // Bad response or no success
+
+        $response = null; // Bad response or no success
+        
+        if($request && $request['success'] && $request['message']) {
+            $response = $request['message'];
+        }
+        
+        ZEI_WC_Debugger::send("[OFFERS] [LIST]", $response);
+        
+        return $response;
     }
 
     static function validateOffer($offerId, $entity, $amount = 1) {
         $request = self::request('/v3/offers/'.$offerId.'/validate/'.$entity, array('units' => $amount));
-        if($request && isset($request['success'])) return $request['success'];
+
+        $response = null; // Invalid response
+
+        if($request && isset($request['success'])) {
+            $response = $request['success'];
+        }
 
         if(self::$debug) {
             var_dump('[ZEI] Invalid request reponse :');
             var_dump($request);
         }
-        return null; // Invalid response
+
+        ZEI_WC_Debugger::send("[OFFERS] [VALIDATION]", $response);
+
+        return $response;
     }
 
     static function checkReward($code) {
         $request = self::request('/v3/rewardcodes/check/'.$code);
-        if($request && isset($request['success'])) return $request;
+
+        $response = null; // Invalid response
+
+        if($request && isset($request['success'])) {
+            $response = $request;
+        }
 
         if(self::$debug) {
             var_dump('[ZEI] Invalid request reponse :');
             var_dump($request);
         }
 
-        return null; // Invalid response
+        ZEI_WC_Debugger::send("[REWARDS] [CHECK]", $response);
+
+        return $response;
     }
 
     static function validateReward($code) {
         $request = self::request('/v3/rewardcodes/validate/'.$code);
-        if($request && isset($request['success'])) return $request;
+
+        $response = null; // Invalid response
+        
+        if($request && isset($request['success'])) {
+            $response = $request;
+        }
 
         if(self::$debug) {
             var_dump('[ZEI] Invalid request reponse :');
             var_dump($request);
         }
 
-        return null; // Invalid response
+        ZEI_WC_Debugger::send("[REWARDS] [VALIDATION]", $response);
+
+        return $response;
     }
 
 }
