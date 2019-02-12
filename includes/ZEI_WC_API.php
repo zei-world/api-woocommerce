@@ -108,7 +108,7 @@ class ZEI_WC_API {
         }
 
         if(self::$debug) {
-            var_dump('[ZEI] Invalid request reponse :');
+            var_dump('[ZEI] ' . ($response === null ? 'INVALID' : 'Valid') . ' request reponse :');
             var_dump($request);
         }
 
@@ -127,7 +127,7 @@ class ZEI_WC_API {
         }
 
         if(self::$debug) {
-            var_dump('[ZEI] Invalid request reponse :');
+            var_dump('[ZEI] ' . ($response === null ? 'INVALID' : 'Valid') . ' request reponse :');
             var_dump($request);
         }
 
@@ -146,7 +146,7 @@ class ZEI_WC_API {
         }
 
         if(self::$debug) {
-            var_dump('[ZEI] Invalid request reponse :');
+            var_dump('[ZEI] ' . ($response === null ? 'INVALID' : 'Valid') . ' request reponse :');
             var_dump($request);
         }
 
